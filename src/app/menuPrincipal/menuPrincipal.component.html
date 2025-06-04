@@ -1,1 +1,17 @@
-<p>menu-principal works!</p>
+<h2>Lista de Libros</h2>
+<table border="1">
+  <tr>
+    <th>ID</th>
+    <th>Título</th>
+    <th>Autor</th>
+    <th>Año</th>
+    <th>Género</th>
+  </tr>
+  <tr *ngFor="let libro of libros">
+    <td>{{ libro.id }}</td>
+    <td>{{ libro.titulo }}</td>
+    <td>{{ libro.autor }}</td>
+    <td>{{ libro.anio }}</td>
+    <td>{{ libro.genero }}</td>
+  </tr>
+</table>
