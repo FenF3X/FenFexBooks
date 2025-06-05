@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { API_ENDPOINTS } from '../constants/api.constants';
 
 @Component({
   selector: 'app-menu-principal',
@@ -14,12 +15,15 @@ export class MenuPrincipalComponent implements OnInit {
   constructor(private http:HttpClient) { }
 
   ngOnInit(): void {
-     this.http.get<any[]>('http://localhost:3000/datos')
-      .subscribe(data => {
+this.http.get<any[]>(API_ENDPOINTS._LISTAR_LIBROS_).subscribe(
+      (data) => {
         this.libros = data;
-      }, error => {
+        console.log('Libros obtenidos:', this.libros);
+      },
+      (error) => {
         console.error('Error al obtener los libros:', error);
-      });
+      }
+    );
     }
 
 }
