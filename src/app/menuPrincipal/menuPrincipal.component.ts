@@ -15,6 +15,7 @@ export class MenuPrincipalComponent implements OnInit {
   constructor(private http:HttpClient) { }
 
   ngOnInit(): void {
+   
 this.http.get<any[]>(API_ENDPOINTS._VER_MENU_).subscribe(
       (data) => {
         this.opciones = data;

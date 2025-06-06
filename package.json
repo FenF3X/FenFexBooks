@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "concurrently \"npm run apache\" \"ng serve\"",
+    "start": "concurrently  \"ng serve\"",
     "apache": "start \"\" \"C:\\xampp\\apache_start.bat\"",
     "dev": "concurrently \"ng serve\" \"nodemon ../backend/index.php\"",
     "build": "ng build",
@@ -23,6 +23,7 @@
     "@capacitor/android": "^7.2.0",
     "@capacitor/cli": "^7.2.0",
     "@capacitor/core": "^7.2.0",
+    "bootstrap": "^4.6.2",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.1"

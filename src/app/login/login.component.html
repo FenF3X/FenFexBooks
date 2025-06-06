@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login - Biblioteca</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+<link type="image/png" sizes="96x96" rel="icon" href="icons8-libro-dotted-96.png"></head>
+<body>
+  <div class="login-container">
+    <div class="login-box">
+      <span class="material-symbols-outlined icono-libro">menu_book</span>
+      <h2>Iniciar sesión</h2>
+      <form [formGroup]="form" (ngSubmit)="iniciarSesion()">
+  <input type="text" formControlName="usuario" placeholder="Usuario">
+  <input type="password" formControlName="contrasena" placeholder="Contraseña">
+  <button type="submit">Iniciar sesión</button>
+</form>
+
+      <p class="ayuda">
+        <a routerLink="/recuperar">¿Olvidaste tu contraseña?</a>
+        <a routerLink="/crearCuenta">Crear Cuenta</a>
+    </div>
+  </div>
+</body>
+</html>
