@@ -10,15 +10,15 @@ import { API_ENDPOINTS } from '../constants/api.constants';
 })
 export class MenuPrincipalComponent implements OnInit {
 
-  libros:any[] = [];
+  opciones:any[] = [];
   
   constructor(private http:HttpClient) { }
 
   ngOnInit(): void {
-this.http.get<any[]>(API_ENDPOINTS._LISTAR_LIBROS_).subscribe(
+this.http.get<any[]>(API_ENDPOINTS._VER_MENU_).subscribe(
       (data) => {
-        this.libros = data;
-        console.log('Libros obtenidos:', this.libros);
+        this.opciones = data;
+        console.log('Opciones:', this.opciones);
       },
       (error) => {
         console.error('Error al obtener los libros:', error);

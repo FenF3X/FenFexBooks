@@ -1,17 +1,8 @@
-<h2>Lista de Libros</h2>
-<table border="1">
-  <tr>
-    <th>ID</th>
-    <th>Título</th>
-    <th>Autor</th>
-    <th>Año</th>
-    <th>Género</th>
-  </tr>
-  <tr *ngFor="let libro of libros">
-    <td>{{ libro.id }}</td>
-    <td>{{ libro.titulo }}</td>
-    <td>{{ libro.autor }}</td>
-    <td>{{ libro.anio }}</td>
-    <td>{{ libro.genero }}</td>
-  </tr>
-</table>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+
+<div *ngFor="let opcion of opciones">
+  <a [routerLink]="opcion.ruta" class="libro opcion-menu">
+    <span class="material-symbols-outlined">{{ opcion.icono }}</span>
+    <span class="texto-opcion">{{ opcion.nombre }}</span>
+  </a>
+</div>

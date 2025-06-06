@@ -1,7 +1,0 @@
-<?xml version='1.0' encoding='utf-8'?>
-<resources>
-    <string name="app_name">fenfexbooks</string>
-    <string name="title_activity_main">fenfexbooks</string>
-    <string name="package_name">com.fenfex.app</string>
-    <string name="custom_url_scheme">com.fenfex.app</string>
-</resources>
