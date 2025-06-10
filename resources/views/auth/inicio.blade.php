@@ -15,9 +15,13 @@
 </head>
 <body>
 
-  <!-- Botón hamburguesa de libros para móvil -->
-  <div class="menu-toggle d-md-none text-dark" id="toggleMenu">
-    <span id="menuIcon">📘📙📗</span>
+  <!-- Botón hamburguesa de libros para móvil (flotante y redondo) -->
+  <div 
+    class="menu-toggle d-md-none  text-dark position-fixed rounded-circle shadow"
+    id="toggleMenu"
+    style="bottom: 24px; right: 24px; width: 56px; height: 56px; background: #fff; display: flex; align-items: center; justify-content: center; z-index: 1050; cursor: pointer;"
+  >
+    <span id="menuIcon" style="font-size: 2rem;">📘</span>
   </div>
 
   <!-- Menú móvil -->
@@ -32,10 +36,10 @@
 
   <div class="container-fluid">
     <div class="row">
-      
-      <!-- Menú lateral escritorio -->
-      @include('partials.sidebar')
+            @include('auth.partials.nav')
 
+      <!-- Menú lateral escritorio -->
+      @include('auth.partials.sidebar')
       <!-- Contenido principal -->
       <main class="col-md-9 col-lg-10 p-4 contenido">
         <section class="progreso">
@@ -73,7 +77,7 @@
 
     toggleBtn.addEventListener('click', () => {
       const abierto = menu.classList.toggle('d-none');
-      icon.textContent = abierto ? '📖' : '📘📙📗';
+      icon.textContent = abierto ? '📘' : '📖';
     });
   </script>
 </body>

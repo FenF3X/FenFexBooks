@@ -9,7 +9,7 @@
     }
 
     .estante {
-      background: #8b5a2b;
+      background-color: #8b5a2b;
       color: #fff;
       min-height: 100vh;
       padding: 1rem;
@@ -17,14 +17,20 @@
 
     .logo {
       text-align: center;
-      font-size: 2rem;
+      font-size: 1.5rem;
       margin-bottom: 1rem;
+      color: #fff;
     }
 
+
     .libro {
-      display: block;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem; 
+      justify-content: start; 
+      font-size: 1.1rem;
       background: #d4af37;
-      color: #000;
+      color: #fff;
       padding: 0.75rem 1rem;
       margin: 0.5rem 0;
       border-radius: 5px;
@@ -32,7 +38,13 @@
       font-weight: bold;
       text-align: center;
       transition: background 0.3s;
-    }
+
+}
+
+a.libro {
+          color: #fff;
+
+}
 
     .libro:hover {
       background: #f0c040;
@@ -61,14 +73,7 @@
       font-style: italic;
     }
 
-    .menu-toggle {
-      display: flex;
-      justify-content: start;
-      align-items: center;
-      padding: 1rem;
-      font-size: 1.8rem;
-      cursor: pointer;
-    }
+  
 
     .menu-movil {
       background: #8b5a2b;
@@ -82,13 +87,6 @@
       }
     }
 
-    .libro {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem; /* separa el icono del texto */
-  justify-content: start; /* alinea a la izquierda */
-  font-size: 1.1rem;
-}
 
 .material-symbols-outlined {
   font-size: 1.5rem;
