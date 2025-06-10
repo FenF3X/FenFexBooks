@@ -1,0 +1,29 @@
+Dar permiso a termux para acceder al almacenamiento:
+termux-setup-storage
+
+
+Instalar dependencias:
+pkg install  coreutils bash curl wget findutils mariadb php composer git unzip
+
+Si Laravel lanza errores como "extensión mbstring no encontrada", instalar:
+pkg install php-mbstring php-xml php-curl php-pdo php-tokenizer
+
+Iniciar mysql:
+mysqld
+nohup mysqld > /dev/null 2>&1 &(En segundo plano)
+
+
+Iniciar proyecto como primera vez(SE DEBE ESTAR DENTRO DEL PROYECTO):
+composer install
+php artisan key:generate
+php artisan serve --host=0.0.0.0 --port=8000
+
+
+Copiar cualquier archivo desde Documents:
+cp /storage/emulated/0/Documents/archivo.sql  ~/
+
+Importar SQL en la base de datos 
+1: mysql -u root
+2: CREATE DATABASE nombre_basedatos
+3: exit
+4: mysql -u root nombre_basedatos < ~/nombre_de_tu_backup.sql
