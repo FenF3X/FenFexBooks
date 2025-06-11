@@ -10,7 +10,7 @@ body {
 }
 
 .estante {
-  background-color: #2e2e2e;
+  background-color: #8b5a2b !important; 
   color: #f5f5f5;
   min-height: 100vh;
   padding: 1rem;
@@ -29,7 +29,7 @@ body {
   gap: 0.5rem;
   justify-content: start;
   font-size: 1.1rem;
-  background: #8b5a2b;        /* marrón dorado oscuro */
+      background: #d4af37;
   color: #fff;
   padding: 0.75rem 1rem;
   margin: 0.5rem 0;
@@ -44,9 +44,6 @@ a.libro {
   color: #fff;
 }
 
-.libro:hover {
-  background: #b8860b;  /* dorado más brillante al pasar */
-}
 
 .contenido section {
   background: #2c2c2c;
@@ -91,7 +88,7 @@ blockquote {
 }
 
 .navbar-toggler {
-  background-color: #333 !important;
+  background-color: #8b5a2b !important; 
   border: 2px solid #d4af37 !important;
 }
 

@@ -1,6 +1,11 @@
 document.addEventListener("DOMContentLoaded", function () {
     const alternarBtn = document.getElementById('alternarColorBtn');
-
+// ✅ Al cargar la página, aplica el tema guardado
+    const temaGuardado = localStorage.getItem("tema");
+    const tema = document.getElementById("tema");
+    if (temaGuardado) {
+      tema.setAttribute("href", temaGuardado);
+    }
     alternarBtn.addEventListener("click", function () {
         const elementos = document.querySelectorAll('.navbar *, .estante *');
         const estante = document.querySelector('.estante');
@@ -60,13 +65,15 @@ document.addEventListener("DOMContentLoaded", function () {
                 el.style.color = "#000"; 
             });
         }
-        const tema = document.getElementById("tema");
-        const actual = tema.getAttribute("href");
-
+        
+            const actual = tema.getAttribute("href");
 if (actual.includes("pendientes.css")) {
   tema.setAttribute("href", "/css/claro.css");
+  localStorage.setItem("tema", "/css/claro.css");
 } else {
   tema.setAttribute("href", "/css/pendientes.css");
+  localStorage.setItem("tema", "/css/pendientes.css");
+
 }
 
     });

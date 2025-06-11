@@ -9,7 +9,7 @@
 
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" id="tema" href="{{ asset('css/inicio.css') }}">
+    <link rel="stylesheet" id="tema" href="{{ asset('css/pendientes.css') }}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
 
 </head>
