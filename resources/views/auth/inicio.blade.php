@@ -56,14 +56,10 @@
         <section class="ultimos">
         <h2>🔍 Buscar libro: </h2>
     <!-- Buscador centrado -->
-    <div class="mx-auto d-flex align-items-center" style="max-width: 400px;">
-      <form class="d-flex" action="" method="GET">
-        <input class="form-control me-2" type="search" id="busqueda" placeholder="Buscar libros..." aria-label="Buscar"
-          style="background-color: #fffbe6; color: #8b5a2b; border-color: #d4af37;">
-        <button class="btn btn-outline-warning" onclick="buscarLibro(document.getElementById('busqueda').value)" style="color: #8b5a2b; background-color: #ffc720;">Buscar</button>
-      </form>
-    </div>
-
+        <input class="form-control me-2" type="text" id="busqueda" placeholder="Buscar libros..." aria-label="Buscar"
+          style="background-color: #fffbe6; color: #8b5a2b; border-color: #d4af37;max-width: 400px;">
+<button class="btn btn-outline-warning" onclick="buscarLibroGoogle(document.getElementById('busqueda').value)" style="color: #8b5a2b; background-color: #ffc720;">Buscar</button>
+      <div id="resultados"></div>
 
         </section>
       </main>
@@ -88,26 +84,47 @@
     });
   </script>
   <script>
-function mostrarLibros(libros) {
+function buscarLibroGoogle(titulo) {
+  if (titulo.trim() === '') {
+    alert('Por favor, ingresa un término de búsqueda.');
+    return;
+  }
+
+  fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(titulo)}`)
+    .then(response => response.json())
+    .then(data => mostrarLibrosGoogle(data.items))
+    .catch(error => console.error("Error al buscar libros:", error));
+}
+</script>
+
+<script>
+function mostrarLibrosGoogle(libros) {
   const contenedor = document.getElementById('resultados');
   contenedor.innerHTML = ''; // Limpia resultados anteriores
 
+  if (!libros || libros.length === 0) {
+    contenedor.innerHTML = '<p>No se encontraron libros.</p>';
+    return;
+  }
+
   libros.slice(0, 10).forEach(libro => {
-    const titulo = libro.title;
-    const autor = libro.author_name ? libro.author_name.join(', ') : 'Desconocido';
-    const portada = libro.cover_i
-      ? `https://covers.openlibrary.org/b/id/${libro.cover_i}-M.jpg`
-      : 'https://via.placeholder.com/100x150?text=Sin+imagen';
+    const info = libro.volumeInfo;
+    const titulo = info.title || 'Sin título';
+    const autor = info.authors ? info.authors.join(', ') : 'Autor desconocido';
+    const portada = info.imageLinks?.thumbnail || 'https://via.placeholder.com/100x150?text=Sin+imagen';
 
     contenedor.innerHTML += `
-      <div style="margin-bottom: 1rem;">
-        <img src="${portada}" alt="${titulo}" style="height:150px;"><br>
-        <strong>${titulo}</strong><br>
-        <em>${autor}</em>
+      <div class="card d-inline-block m-2" style="width: 150px;">
+        <img src="${portada}" class="card-img-top" alt="${titulo}">
+        <div class="card-body p-2">
+          <h6 class="card-title" style="font-size: 0.9rem;">${titulo}</h6>
+          <p class="card-text" style="font-size: 0.8rem;">${autor}</p>
+        </div>
       </div>
     `;
   });
 }
 </script>
+
 </body>
 </html>
