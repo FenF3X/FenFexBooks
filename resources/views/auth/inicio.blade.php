@@ -66,22 +66,107 @@
           </div>
         </section>
         <section id="seccion-resultados" style="display: none;">
-            <h2>📚🔎 Resultados de búsqueda:</h2>
-            <div id="carouselLibros" class="carousel slide" data-bs-ride="carousel">
-  <div class="carousel-inner" id="carousel-inner-libros">
-    <!-- Aquí van las tarjetas de libros -->
-  </div>
-  <button class="carousel-control-prev" type="button" data-bs-target="#carouselLibros" data-bs-slide="prev">
-    <span class="carousel-control-prev-icon" aria-hidden="true" style="background-color: #8b5a2b;"></span>
-    <span class="visually-hidden">Anterior</span>
-  </button>
-  <button class="carousel-control-next" type="button" data-bs-target="#carouselLibros" data-bs-slide="next">
-    <span class="carousel-control-next-icon" aria-hidden="true" style="background-color: #8b5a2b;"></span>
-    <span class="visually-hidden">Siguiente</span>
-  </button>
-</div>
+  <h2>📚🔎 Resultados de búsqueda:</h2>
+  <div class="position-relative">
+    <!-- Flecha izquierda -->
+    <button class="flecha-slider flecha-izq" onclick="desplazarSlider(-1)"><span style="position: absolute;
+    bottom: 20%;
+    left: 8%;
+    font-size:25px;">👈</span></button>
 
-        </section>
+    <!-- Slider -->
+    <div class="libros-slider-container">
+      <div class="libros-slider" id="librosSlider"></div>
+    </div>
+
+    <!-- Flecha derecha -->
+    <button class="flecha-slider flecha-der" onclick="desplazarSlider(1)"><span style="position: absolute;
+    bottom: 20%;
+    left: 13%;
+    font-size:25px;">👉</span></button>
+  </div>
+</section>
+
+
+<style>
+  .flecha-slider {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: #ffc720;
+  color: #8b5a2b;
+  border: none;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  width: 40px;
+  height: 40px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  z-index: 5;
+}
+
+.flecha-izq {
+  left: -20px;
+}
+
+.flecha-der {
+  right: -20px;
+}
+
+.libros-slider-container {
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding: 1rem 0;
+}
+
+.libros-slider {
+  display: flex;
+  gap: 20px;
+  padding: 10px;
+}
+
+.libros-slider .card {
+  width: 180px;
+  transition: transform 0.3s, opacity 0.3s, box-shadow 0.3s;
+  flex-shrink: 0;
+  opacity: 0.4;
+  transform: scale(0.95);
+}
+
+.libros-slider .card.centrado {
+  opacity: 1;
+  transform: scale(1.1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.flecha-slider {
+  font-size: 1.5rem;
+  background-color: #ffc720;
+  color: #8b5a2b;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+}
+.libros-slider-container::-webkit-scrollbar {
+  height: 10px;
+}
+
+.libros-slider-container::-webkit-scrollbar-track {
+  background: #f5e6c8;
+  border-radius: 5px;
+}
+
+.libros-slider-container::-webkit-scrollbar-thumb {
+  background: #d4af37;
+  border-radius: 5px;
+}
+
+.libros-slider-container::-webkit-scrollbar-thumb:hover {
+  background: #8b5a2b;
+}
+
+</style>
+        
        
       </main>
     </div>
@@ -121,46 +206,84 @@
 
 <script>
 function mostrarLibrosGoogle(libros) {
-  const contenedor = document.getElementById('carousel-inner-libros');
+  const contenedor = document.getElementById('librosSlider');
   contenedor.innerHTML = '';
 
   if (!libros || libros.length === 0) {
-    contenedor.innerHTML = '<div class="carousel-item active"><p>No se encontraron libros.</p></div>';
+    contenedor.innerHTML = '<p>No se encontraron libros.</p>';
     return;
   }
 
-  libros.slice(0, 10).forEach((libro, index) => {
+  libros.slice(0, 10).forEach(libro => {
     const info = libro.volumeInfo;
     const titulo = info.title || 'Sin título';
     const autor = info.authors ? info.authors.join(', ') : 'Autor desconocido';
     const portada = info.imageLinks?.thumbnail || 'https://via.placeholder.com/100x150?text=Sin+imagen';
 
-    const activeClass = index === 0 ? 'active' : '';
-
-    const item = document.createElement('div');
-    item.className = `carousel-item ${activeClass}`;
-    item.innerHTML = `
-      <div class="d-flex justify-content-center">
-        <div class="card" style="width: 200px;">
-          <img src="${portada}" class="card-img-top" alt="${titulo}" style="height: 300px; object-fit: cover;">
-          <div class="card-body text-center">
-            <h6 class="card-title">${titulo}</h6>
-            <p class="card-text" style="font-size: 0.9rem;">${autor}</p>
-          </div>
-        </div>
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      <img src="${portada}" class="card-img-top" style="height: 250px; object-fit: cover;" alt="${titulo}">
+      <div class="card-body text-center">
+        <h6 class="card-title">${titulo}</h6>
+        <p class="card-text">${autor}</p>
       </div>
     `;
-    contenedor.appendChild(item);
+    contenedor.appendChild(card);
+    indiceLibroActual = 0;
+
+  });
+
+  marcarCentrado(); // marcar el primero
+}
+
+// Función para marcar el elemento centrado
+function marcarCentrado() {
+  const slider = document.getElementById('librosSlider');
+  const cards = slider.querySelectorAll('.card');
+  const centroSlider = slider.scrollLeft + slider.offsetWidth / 2;
+
+  cards.forEach(card => {
+    const rect = card.getBoundingClientRect();
+    const cardCentro = rect.left + rect.width / 2;
+    const distancia = Math.abs(centroSlider - (slider.scrollLeft + card.offsetLeft + card.offsetWidth / 2));
+    card.classList.toggle('centrado', distancia < card.offsetWidth / 2);
   });
 }
 
+document.addEventListener('DOMContentLoaded', () => {
+  const slider = document.getElementById('librosSlider');
+  slider?.addEventListener('scroll', () => {
+    clearTimeout(slider._scrollTimeout);
+    slider._scrollTimeout = setTimeout(marcarCentrado, 100); // espera para no llamar demasiado rápido
+  });
+});
+
+
 </script>
 <script>
-  function desplazarSlider(direccion) {
-    const slider = document.getElementById('sliderLibros');
-    const desplazamiento = 200 * direccion; // cantidad en píxeles
-    slider.scrollBy({ left: desplazamiento, behavior: 'smooth' });
-  }
+function desplazarSlider(direccion) {
+  const contenedorScroll = document.querySelector('.libros-slider-container');
+  const tarjetas = document.querySelectorAll('.libros-slider .card');
+  if (tarjetas.length === 0) return;
+
+  // Limita el índice al rango válido
+  indiceLibroActual += direccion;
+  if (indiceLibroActual < 0) indiceLibroActual = 0;
+  if (indiceLibroActual >= tarjetas.length) indiceLibroActual = tarjetas.length - 1;
+
+  const tarjetaSeleccionada = tarjetas[indiceLibroActual];
+  const scrollTarget = tarjetaSeleccionada.offsetLeft - (contenedorScroll.offsetWidth / 2 - tarjetaSeleccionada.offsetWidth / 2);
+
+  contenedorScroll.scrollTo({ left: scrollTarget, behavior: 'smooth' });
+
+  tarjetas.forEach(t => t.classList.remove('centrado'));
+  tarjetaSeleccionada.classList.add('centrado');
+}
+
+
+let indiceLibroActual = 0;
+
 </script>
 
 </body>
