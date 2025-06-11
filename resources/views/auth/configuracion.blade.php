@@ -9,7 +9,7 @@
 
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" id="tema" href="{{ asset('css/inicio.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/pendientes.css') }}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
 
 </head>
@@ -42,11 +42,11 @@
       @include('auth.partials.sidebar')
       <!-- Contenido principal -->
       <main class="col-md-9 col-lg-10 p-4 contenido">
-        <section class="porleer mt-4 text-center">
-  <h2> 🏠🖊️ Pagina principal👓📚</h2>
+<section class="porleer mt-4 text-center">
+  <h2>🔧⚙️Configuracion y datos</h2>
    
 </section>
-        <section class="progreso">
+<section class="progreso">
           <h2>📘 Lectura actual</h2>
           <p><strong>Libro:</strong> "El Nombre del Viento"</p>
           <p><strong>Página:</strong> 87 de 243</p>
@@ -66,11 +66,10 @@
           <blockquote>“Leer es soñar con los ojos abiertos.”</blockquote>
           <p>Has leído <strong>12 libros</strong> este año.</p>
         </section>
-      </main>
+</main>
     </div>
   </div>
-
-    <footer class="text-center py-4" style="background-color: #8b5a2b; color: #d4af37;">
+<footer class="text-center py-4" style="background-color: #8b5a2b; color: #d4af37;">
   <small>© 2025 FenFexBooks · Todos los derechos reservados</small>
 </footer>
   <!-- Bootstrap Bundle con Popper -->

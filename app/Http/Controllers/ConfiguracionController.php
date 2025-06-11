@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Pendientes;
+use App\Models\Configuracion;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\MenuOpcion;
-class PendientesController extends Controller
+class ConfiguracionController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,8 +14,8 @@ class PendientesController extends Controller
     public function menus()
     {
     $opciones = MenuOpcion::where('visible', true)->orderBy('orden')->get();
-    return view('auth.porleer', compact('opciones'));    
-}
+    return view('auth.configuracion', compact('opciones'));    
+    }
 
     /**
      * Show the form for creating a new resource.
@@ -36,7 +36,7 @@ class PendientesController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Pendientes $pendientes)
+    public function show(Configuracion $configuracion)
     {
         //
     }
@@ -44,7 +44,7 @@ class PendientesController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Pendientes $pendientes)
+    public function edit(Configuracion $configuracion)
     {
         //
     }
@@ -52,7 +52,7 @@ class PendientesController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Pendientes $pendientes)
+    public function update(Request $request, Configuracion $configuracion)
     {
         //
     }
@@ -60,7 +60,7 @@ class PendientesController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Pendientes $pendientes)
+    public function destroy(Configuracion $configuracion)
     {
         //
     }

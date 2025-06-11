@@ -1,0 +1,101 @@
+* {
+  font-family: 'DancingScript', cursive;
+  font-size: 1rem;
+}
+     body {
+      font-family: 'Dancing Script', cursive;
+      background: #f9f6f0;
+    }
+
+    .estante {
+      background-color: #8b5a2b;
+      color: #fff;
+      min-height: 100vh;
+      padding: 1rem;
+    }
+
+    .logo {
+      text-align: center;
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      color: #fff;
+    }
+
+
+    .libro {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem; 
+      justify-content: start; 
+      font-size: 1.1rem;
+      background: #d4af37;
+      color: #fff;
+      padding: 0.75rem 1rem;
+      margin: 0.5rem 0;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: bold;
+      text-align: center;
+      transition: background 0.3s;
+
+}
+
+a.libro {
+          color: #fff;
+
+}
+
+    .libro:hover {
+      background: #f0c040;
+    }
+
+    .contenido section {
+      background: #fff;
+      padding: 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+      margin-bottom: 2rem;
+    }
+
+    .libro-portada {
+      font-size: 2.5rem;
+      background: #eee;
+      width: 60px;
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 5px;
+    }
+
+    blockquote {
+      font-style: italic;
+    }
+
+  
+
+    .menu-movil {
+      background: #8b5a2b;
+      padding: 1rem;
+    }
+
+    @media (min-width: 768px) {
+      .menu-toggle,
+      .menu-movil {
+        display: none;
+      }
+    }
+
+
+.material-symbols-outlined {
+  font-size: 1.5rem;
+}
+
+
+    .navbar-toggler {
+  background-color: #8b5a2b !important; 
+  border: 2px solid #d4af37 !important;    
+}
+.navbar-toggler-icon {
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='white' stroke-width='2' stroke-linecap='round' d='M4 7H26 M4 15H26 M4 23H26'/%3E%3C/svg%3E");
+}

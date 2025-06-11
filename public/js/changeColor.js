@@ -41,6 +41,8 @@ document.addEventListener("DOMContentLoaded", function () {
             document.getElementById('salida').style.backgroundColor = "#d4af37";
             document.getElementById('salida').style.borderColor = "#8b5a2b";
             document.querySelector('.logo').style.color = "#000";
+            document.querySelector('footer').style.color = "#8b5a2b";
+            document.querySelector('footer').style.backgroundColor = "#d4af37";
             document.querySelectorAll('.libro').forEach(el => {
                 el.style.color = "#fff"; 
             });
@@ -52,9 +54,20 @@ document.addEventListener("DOMContentLoaded", function () {
             document.getElementById('salida').style.backgroundColor = "#8b5a2b";
             document.getElementById('salida').style.borderColor = "#d4af37";
             document.querySelector('.logo').style.color = "#fff";
+            document.querySelector('footer').style.color = "#d4af37";
+            document.querySelector('footer').style.backgroundColor = "#8b5a2b";
             document.querySelectorAll('.libro').forEach(el => {
                 el.style.color = "#000"; 
             });
         }
+        const tema = document.getElementById("tema");
+const actual = tema.getAttribute("href");
+
+if (actual.includes("pendientes.css")) {
+  tema.setAttribute("href", "/css/claro.css");
+} else {
+  tema.setAttribute("href", "/css/pendientes.css");
+}
+
     });
 });
