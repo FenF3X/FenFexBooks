@@ -61,7 +61,7 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         }
         const tema = document.getElementById("tema");
-const actual = tema.getAttribute("href");
+        const actual = tema.getAttribute("href");
 
 if (actual.includes("pendientes.css")) {
   tema.setAttribute("href", "/css/claro.css");
