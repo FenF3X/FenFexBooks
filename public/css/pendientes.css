@@ -4,10 +4,14 @@
 }
 
 body {
-  font-family: 'Dancing Script', cursive;
-  background: #1e1e1e; /* fondo general oscuro */
-  color: #f5f5f5;       /* texto general claro */
-}
+      font-family: 'Dancing Script', cursive;
+      background: #f9f6f0;
+      overflow-y:hidden;
+    }
+    main{
+      overflow-y: auto;
+      height: calc(100vh - 56px); /* Ajusta la altura del main para que ocupe el espacio restante */
+    }
 
 .estante {
   background-color: #8b5a2b !important; 
@@ -44,6 +48,9 @@ a.libro {
   color: #fff;
 }
 
+.contenido{
+  background:#5c5c5c ;
+}
 
 .contenido section {
   background: #2c2c2c;

@@ -12,6 +12,9 @@
     <link rel="stylesheet" id="tema" href="{{ asset('css/pendientes.css') }}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
 
+  <style>
+   
+  </style>
 </head>
 <body>
 
@@ -41,7 +44,7 @@
       <!-- Menú lateral escritorio -->
       @include('auth.partials.sidebar')
       <!-- Contenido principal -->
-      <main class="col-md-9 col-lg-10 p-4 contenido">
+<main class="col-md-9 col-lg-10 p-4 contenido">
         <section class="porleer mt-4 text-center">
   <h2> 🏠🖊️ Pagina principal👓📚</h2>
    

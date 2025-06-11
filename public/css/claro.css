@@ -5,8 +5,13 @@
      body {
       font-family: 'Dancing Script', cursive;
       background: #f9f6f0;
+      overflow-y:hidden;
     }
-
+    main{
+      overflow-y: auto;
+      background: #f9f6f0;
+      height: calc(100vh - 56px); /* Ajusta la altura del main para que ocupe el espacio restante */
+    }
     .estante {
       background-color: #8b5a2b;
       color: #fff;
@@ -37,7 +42,6 @@
       font-weight: bold;
       text-align: center;
       transition: background 0.3s;
-
 }
 
 a.libro {
@@ -48,7 +52,9 @@ a.libro {
     .libro:hover {
       background: #f0c040;
     }
-
+.contenido{
+  background:#f9f6f0 ;
+}
     .contenido section {
       background: #fff;
       padding: 1.5rem;
