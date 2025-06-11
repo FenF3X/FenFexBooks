@@ -7,19 +7,7 @@
     <div class="collapse navbar-collapse" id="navbarNav">
         <span style="color: #d4af37;">&nbsp;&nbsp;&nbsp;📅 {{ \Carbon\Carbon::now()->format('d/m/Y') }}</span>
         <span style="color: #d4af37;" id="live-clock">&nbsp;&nbsp;&nbsp;</span>
-        <script>
-            document.addEventListener("DOMContentLoaded", function () {
-            function updateClock() {
-                const now = new Date();
-                const h = String(now.getHours()).padStart(2, '0');
-                const m = String(now.getMinutes()).padStart(2, '0');
-                const s = String(now.getSeconds()).padStart(2, '0');
-                document.getElementById('live-clock').textContent = ` 🕒 ${h}:${m}:${s}`;
-            }
-            updateClock();
-            setInterval(updateClock, 1000);
-            });
-        </script>
+        
 
         <form class="ml-auto" action="{{ route('logout') }}" method="GET" style="margin-left: auto;">
             @csrf
@@ -40,4 +28,17 @@
         });
     });
 </script>
+<script>
+            document.addEventListener("DOMContentLoaded", function () {
+            function updateClock() {
+                const now = new Date();
+                const h = String(now.getHours()).padStart(2, '0');
+                const m = String(now.getMinutes()).padStart(2, '0');
+                const s = String(now.getSeconds()).padStart(2, '0');
+                document.getElementById('live-clock').textContent = ` 🕒 ${h}:${m}:${s}`;
+            }
+            updateClock();
+            setInterval(updateClock, 1000);
+            });
+        </script>
 <script type="module" src="{{asset('js/changeColor.js')}}"></script>

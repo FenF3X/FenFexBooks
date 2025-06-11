@@ -54,17 +54,17 @@
         </section>
 
         <section class="ultimos">
-          <h2>📚 Últimos libros leídos</h2>
-          <div class="d-flex gap-3">
-            <div class="libro-portada">📕</div>
-            <div class="libro-portada">📗</div>
-            <div class="libro-portada">📘</div>
-          </div>
-        </section>
+        <h2>🔍 Buscar libro: </h2>
+    <!-- Buscador centrado -->
+    <div class="mx-auto d-flex align-items-center" style="max-width: 400px;">
+      <form class="d-flex" action="" method="GET">
+        <input class="form-control me-2" type="search" id="busqueda" placeholder="Buscar libros..." aria-label="Buscar"
+          style="background-color: #fffbe6; color: #8b5a2b; border-color: #d4af37;">
+        <button class="btn btn-outline-warning" onclick="buscarLibro(document.getElementById('busqueda').value)" style="color: #8b5a2b; background-color: #ffc720;">Buscar</button>
+      </form>
+    </div>
 
-        <section class="frase">
-          <blockquote>“Leer es soñar con los ojos abiertos.”</blockquote>
-          <p>Has leído <strong>12 libros</strong> este año.</p>
+
         </section>
       </main>
     </div>
@@ -87,5 +87,27 @@
       icon.textContent = abierto ? '📘' : '📖';
     });
   </script>
+  <script>
+function mostrarLibros(libros) {
+  const contenedor = document.getElementById('resultados');
+  contenedor.innerHTML = ''; // Limpia resultados anteriores
+
+  libros.slice(0, 10).forEach(libro => {
+    const titulo = libro.title;
+    const autor = libro.author_name ? libro.author_name.join(', ') : 'Desconocido';
+    const portada = libro.cover_i
+      ? `https://covers.openlibrary.org/b/id/${libro.cover_i}-M.jpg`
+      : 'https://via.placeholder.com/100x150?text=Sin+imagen';
+
+    contenedor.innerHTML += `
+      <div style="margin-bottom: 1rem;">
+        <img src="${portada}" alt="${titulo}" style="height:150px;"><br>
+        <strong>${titulo}</strong><br>
+        <em>${autor}</em>
+      </div>
+    `;
+  });
+}
+</script>
 </body>
 </html>
