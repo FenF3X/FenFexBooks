@@ -34,8 +34,10 @@
       position: relative;
     }
 
+
+
     .login-container input {
-      padding: 12px;
+  padding: 12px 40px 12px 12px; /* espacio a la derecha para el icono */
       margin: 10px 0;
       border: 1px solid #ccc;
       border-radius: 6px;
@@ -43,14 +45,16 @@
 
     .eye-icon {
       position: absolute;
-      left: 246px;
+      right:80px;
       top: 50%;
       transform: translateY(-50%);
       cursor: pointer;
       font-size: 18px;
       color: #666;
-      border-left: 1px solid #d4af37;
-    }
+      background: transparent;
+      border: none;
+      padding: 0; 
+   }
 
     .login-container button {
       padding: 12px;
