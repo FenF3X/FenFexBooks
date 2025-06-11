@@ -54,14 +54,32 @@
         </section>
 
         <section class="ultimos">
-        <h2>🔍 Buscar libro: </h2>
-    <!-- Buscador centrado -->
-        <input class="form-control me-2" type="text" id="busqueda" placeholder="Buscar libros..." aria-label="Buscar"
-          style="background-color: #fffbe6; color: #8b5a2b; border-color: #d4af37;max-width: 400px;">
-<button class="btn btn-outline-warning" onclick="buscarLibroGoogle(document.getElementById('busqueda').value)" style="color: #8b5a2b; background-color: #ffc720;">Buscar</button>
-      <div id="resultados"></div>
+          <h2>🔍 Buscar libro: </h2>
+          <!-- Buscador y botón alineados en una fila centrada -->
+          <div class="d-flex justify-content-center align-items-center" style="max-width: 500px; margin: 0 auto;">
+            <input class="form-control me-2" type="text" id="busqueda" placeholder="Buscar libros..." aria-label="Buscar"
+              style="background-color: #fffbe6; color: #8b5a2b; border-color: #d4af37; max-width: 400px;">
+            <button class="btn btn-outline-warning" onclick="buscarLibroGoogle(document.getElementById('busqueda').value)" style="color: #8b5a2b; background-color: #ffc720;">Buscar</button>
+          </div>
+        </section>
+        <section id="seccion-resultados" style="display: none;">
+            <h2>📚🔎 Resultados de búsqueda:</h2>
+            <div id="carouselLibros" class="carousel slide" data-bs-ride="carousel">
+  <div class="carousel-inner" id="carousel-inner-libros">
+    <!-- Aquí van las tarjetas de libros -->
+  </div>
+  <button class="carousel-control-prev" type="button" data-bs-target="#carouselLibros" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true" style="background-color: #8b5a2b;"></span>
+    <span class="visually-hidden">Anterior</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#carouselLibros" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true" style="background-color: #8b5a2b;"></span>
+    <span class="visually-hidden">Siguiente</span>
+  </button>
+</div>
 
         </section>
+       
       </main>
     </div>
   </div>
@@ -83,47 +101,63 @@
       icon.textContent = abierto ? '📘' : '📖';
     });
   </script>
-  <script>
-function buscarLibroGoogle(titulo) {
-  if (titulo.trim() === '') {
-    alert('Por favor, ingresa un término de búsqueda.');
-    return;
-  }
-
-  fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(titulo)}`)
-    .then(response => response.json())
-    .then(data => mostrarLibrosGoogle(data.items))
-    .catch(error => console.error("Error al buscar libros:", error));
-}
-</script>
+   <script>
+          // Mostrar la sección de resultados solo si hay búsqueda
+          function buscarLibroGoogle(titulo) {
+            if (titulo.trim() === '') {
+              alert('Por favor, ingresa un término de búsqueda.');
+              return;
+            }
+            document.getElementById('seccion-resultados').style.display = 'block';
+            fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(titulo)}`)
+              .then(response => response.json())
+              .then(data => mostrarLibrosGoogle(data.items))
+              .catch(error => console.error("Error al buscar libros:", error));
+          }
+        </script>
 
 <script>
 function mostrarLibrosGoogle(libros) {
-  const contenedor = document.getElementById('resultados');
-  contenedor.innerHTML = ''; // Limpia resultados anteriores
+  const contenedor = document.getElementById('carousel-inner-libros');
+  contenedor.innerHTML = '';
 
   if (!libros || libros.length === 0) {
-    contenedor.innerHTML = '<p>No se encontraron libros.</p>';
+    contenedor.innerHTML = '<div class="carousel-item active"><p>No se encontraron libros.</p></div>';
     return;
   }
 
-  libros.slice(0, 10).forEach(libro => {
+  libros.slice(0, 10).forEach((libro, index) => {
     const info = libro.volumeInfo;
     const titulo = info.title || 'Sin título';
     const autor = info.authors ? info.authors.join(', ') : 'Autor desconocido';
     const portada = info.imageLinks?.thumbnail || 'https://via.placeholder.com/100x150?text=Sin+imagen';
 
-    contenedor.innerHTML += `
-      <div class="card d-inline-block m-2" style="width: 150px;">
-        <img src="${portada}" class="card-img-top" alt="${titulo}">
-        <div class="card-body p-2">
-          <h6 class="card-title" style="font-size: 0.9rem;">${titulo}</h6>
-          <p class="card-text" style="font-size: 0.8rem;">${autor}</p>
+    const activeClass = index === 0 ? 'active' : '';
+
+    const item = document.createElement('div');
+    item.className = `carousel-item ${activeClass}`;
+    item.innerHTML = `
+      <div class="d-flex justify-content-center">
+        <div class="card" style="width: 200px;">
+          <img src="${portada}" class="card-img-top" alt="${titulo}" style="height: 300px; object-fit: cover;">
+          <div class="card-body text-center">
+            <h6 class="card-title">${titulo}</h6>
+            <p class="card-text" style="font-size: 0.9rem;">${autor}</p>
+          </div>
         </div>
       </div>
     `;
+    contenedor.appendChild(item);
   });
 }
+
+</script>
+<script>
+  function desplazarSlider(direccion) {
+    const slider = document.getElementById('sliderLibros');
+    const desplazamiento = 200 * direccion; // cantidad en píxeles
+    slider.scrollBy({ left: desplazamiento, behavior: 'smooth' });
+  }
 </script>
 
 </body>
