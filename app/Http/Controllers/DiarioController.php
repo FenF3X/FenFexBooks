@@ -19,7 +19,8 @@ class DiarioController extends Controller
     {
     $opciones = MenuOpcion::where('visible', true)->orderBy('orden')->get();
     $leyendo = Leyendo::all();
-    return view('auth.diario', compact('opciones', 'leyendo'));    
+    $entradas = Diario::orderBy('created_at', 'desc')->get();
+    return view('auth.diario', compact('opciones', 'leyendo', 'entradas'));    
     }
     public function ultimaPaginaFin($id)
 {

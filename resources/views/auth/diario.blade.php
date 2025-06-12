@@ -68,7 +68,6 @@
     </form>
   </div>
 </section>
-
        <section class="mt-4">
           <h2>🧾✍️ Crear nota de lectura nueva</h2>
 
@@ -103,6 +102,28 @@
     </div>
   </form>
 </section>
+<section style="display: none;" id="notas">
+  <h2>📚 Mis notas de lectura</h2>
+  @if ($entradas->isEmpty())
+    <p class="text-muted">No tienes notas de lectura registradas.</p>
+  @else
+    @foreach ($leyendo as $libro)
+      <div class="notas-libro" id="notas-libro-{{ $libro->id }}" style="display:none;">
+        <h4 class="mt-3">{{ $libro->titulo }}</h4>
+        @foreach ($entradas->where('libro_id', $libro->id) as $entrada)
+          <div class="list-group-item d-flex justify-content-between align-items-start" style="background-color: #f8f9fa; margin-bottom: 10px; border-radius: 5px; color: #212529;">
+            <div>
+              <h5 class="mb-1">{{ $entrada->descripcion }}</h5>
+              <p class="mb-1">Página {{ $entrada->pagina_inicio }} a {{ $entrada->pagina_fin }}</p>
+              <small class="text-muted">{{ $entrada->fecha_hora }}</small>
+            </div>
+          </div>
+        @endforeach
+      </div>
+    @endforeach
+  @endif
+</section>
+
 </main>
     </div>
   </div>
@@ -130,10 +151,19 @@ document.addEventListener('DOMContentLoaded', function () {
   const paginaLibroActual = document.getElementById('paginaLibroActual');
 
   select.addEventListener('change', function () {
-    // Mostrar los elementos ocultos al seleccionar un libro
+   
     libroActual.style.display = 'inline';
     paginaLibroActual.style.display = 'inline';
+    document.getElementById('notas').style.display = 'block'; // Mostrar la sección de notas
+
+     // Ocultar las notas de todos los libros
     const libroId = this.value;
+     // Mostrar los elementos ocultos al seleccionar un libro
+    document.querySelectorAll('.notas-libro').forEach(div => div.style.display = 'none');
+
+// Mostrar la del libro seleccionado
+const notasDelLibro = document.getElementById('notas-libro-' + libroId);
+if (notasDelLibro) notasDelLibro.style.display = 'block';
     const titulo = this.options[this.selectedIndex].dataset.titulo;
     const totalPaginas = this.options[this.selectedIndex].dataset.paginas;
   document.getElementById('libro_id').value = libroId;
