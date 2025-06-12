@@ -9,6 +9,7 @@ use App\Http\Controllers\LeidosController;
 use App\Http\Controllers\FavoritosController;
 use App\Http\Controllers\DiarioController;
 use App\Http\Controllers\ConfiguracionController;
+use App\Http\Controllers\GuardarLibroController;
 
 Route::get('/', [LoginController::class, 'viewForm'])->name('login');
 Route::post('/', [LoginController::class, 'login']);
@@ -41,3 +42,5 @@ Route::get('/diario', [DiarioController::class, 'menus'])
 Route::get('/ajustes', [ConfiguracionController::class, 'menus'])
     ->middleware('auth')
     ->name('configuracion');
+
+Route::post('/libros/guardar',[GuardarLibroController::class, 'store']);

@@ -2,6 +2,8 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+
   <title>FenFexBooks - Diario de Lectura</title>
 
   <!-- Fuente caligráfica -->
@@ -12,9 +14,6 @@
     <link rel="stylesheet" id="tema" href="{{ asset('css/pendientes.css') }}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
 
-  <style>
-   
-  </style>
 </head>
 <body>
 
@@ -164,6 +163,13 @@
 .libros-slider-container::-webkit-scrollbar-thumb:hover {
   background: #8b5a2b;
 }
+.libros-slider-container {
+  overflow-x: auto;
+  overflow-y: hidden; /* 👈 esto evita scroll vertical */
+  scroll-behavior: smooth;
+  padding: 1rem 0;
+  white-space: nowrap;
+}
 
 </style>
         
@@ -216,10 +222,14 @@ function mostrarLibrosGoogle(libros) {
 
   libros.slice(0, 10).forEach(libro => {
     const info = libro.volumeInfo;
+    const anio_publicacion = info.publishedDate ? info.publishedDate.substring(0, 4) : '¿?';
     const titulo = info.title || 'Sin título';
     const autor = info.authors ? info.authors.join(', ') : 'Autor desconocido';
     const portada = info.imageLinks?.thumbnail || 'https://via.placeholder.com/100x150?text=Sin+imagen';
-
+    const paginas = info.pageCount || '¿?';
+    const isbn = info.industryIdentifiers?.find(id => id.type === 'ISBN_13')?.identifier
+      || info.industryIdentifiers?.find(id => id.type === 'ISBN_10')?.identifier
+      || 'Sin ISBN';
     const card = document.createElement('div');
     card.className = 'card';
     card.innerHTML = `
@@ -227,6 +237,9 @@ function mostrarLibrosGoogle(libros) {
       <div class="card-body text-center">
         <h6 class="card-title">${titulo}</h6>
         <p class="card-text">${autor}</p>
+        <p class="card-text"><strong>Páginas:</strong> ${paginas}</p>
+        <p class="card-text"><strong>Año:</strong> ${anio_publicacion}</p>
+        <button class="btn btn-primary" onclick="agregarLibro('${titulo}', '${autor}', '${portada}', '${paginas}', '${isbn}', '${anio_publicacion}')">Agregar a mi lista</button>
       </div>
     `;
     contenedor.appendChild(card);
@@ -237,6 +250,69 @@ function mostrarLibrosGoogle(libros) {
   marcarCentrado(); // marcar el primero
 }
 
+function agregarLibro(titulo, autor, portada, paginas, isbn, anio_publicacion) {
+  // Crear el modal si no existe
+  let modal = document.getElementById('modalAgregarLibro');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'modalAgregarLibro';
+    modal.innerHTML = `
+      <div class="modal fade" tabindex="-1" id="modalAgregarLibroReal" aria-labelledby="modalAgregarLibroLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content" style="border-radius: 1rem;">
+            <div class="modal-header" style="background-color: #ffc720;">
+              <h5 class="modal-title" id="modalAgregarLibroLabel">¿Dónde quieres añadir este libro?</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body text-center">
+              <button class="btn btn-outline-warning m-2" onclick="seleccionarLista('pendientes')">Añadir a Pendientes</button>
+              <button class="btn btn-outline-primary m-2" onclick="seleccionarLista('leyendo')">Añadir a Leyendo</button>
+              <button class="btn btn-outline-success m-2" onclick="seleccionarLista('leidos')">Añadir a Terminado</button>
+              <button class="btn btn-outline-danger  m-2" onclick="seleccionarLista('favoritos')">Añadir a Favoritos</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+  }
+
+  // Guardar datos del libro en variables globales temporales
+  window.libroSeleccionado = { titulo, autor, portada, paginas, isbn, anio_publicacion };
+
+  // Mostrar el modal usando Bootstrap 5
+  const modalBootstrap = new bootstrap.Modal(document.getElementById('modalAgregarLibroReal'));
+  modalBootstrap.show();
+
+  // Función para manejar la selección
+  window.seleccionarLista = function(lista) {
+    const libro = window.libroSeleccionado;
+    if (!libro) {
+      alert('No se ha seleccionado ningún libro.');
+      return;
+    }
+    fetch('/libros/guardar', {
+   method: 'POST',
+   headers: {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json',
+    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+  },
+  body: JSON.stringify({
+    titulo: libro.titulo,
+    autor: libro.autor,
+    anio_publicacion:libro.anio_publicacion,
+    paginas: libro.paginas,    
+    isbn: libro.isbn,
+    portada: libro.portada,
+    lista: lista 
+  })
+});
+
+    modalBootstrap.hide();
+  };
+
+}
 // Función para marcar el elemento centrado
 function marcarCentrado() {
   const slider = document.getElementById('librosSlider');
