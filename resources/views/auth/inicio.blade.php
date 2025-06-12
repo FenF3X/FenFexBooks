@@ -249,7 +249,35 @@ function mostrarLibrosGoogle(libros) {
 
   marcarCentrado(); // marcar el primero
 }
-
+function mostrarModalMensaje(mensaje, exito = true) {
+  let modal = document.getElementById('modalMensaje');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'modalMensaje';
+    modal.innerHTML = `
+      <div class="modal fade" tabindex="-1" id="modalMensajeReal" aria-labelledby="modalMensajeLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content" style="border-radius: 1rem;">
+            <div class="modal-header" style="background-color: ${exito ? '#28a745' : '#dc3545'};">
+              <h5 class="modal-title" id="modalMensajeLabel">${exito ? '¡Éxito!' : 'Error'}</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body text-center">
+              <p>${mensaje}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+  } else {
+    modal.querySelector('.modal-title').textContent = exito ? '¡Éxito!' : 'Error';
+    modal.querySelector('.modal-header').style.backgroundColor = exito ? '#28a745' : '#dc3545';
+    modal.querySelector('.modal-body p').textContent = mensaje;
+  }
+  const modalBootstrap = new bootstrap.Modal(document.getElementById('modalMensajeReal'));
+  modalBootstrap.show();
+}
 function agregarLibro(titulo, autor, portada, paginas, isbn, anio_publicacion) {
   // Crear el modal si no existe
   let modal = document.getElementById('modalAgregarLibro');
@@ -286,31 +314,42 @@ function agregarLibro(titulo, autor, portada, paginas, isbn, anio_publicacion) {
 
   // Función para manejar la selección
   window.seleccionarLista = function(lista) {
-    const libro = window.libroSeleccionado;
-    if (!libro) {
-      alert('No se ha seleccionado ningún libro.');
-      return;
-    }
-    fetch('/libros/guardar', {
-   method: 'POST',
-   headers: {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json',
-    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-  },
-  body: JSON.stringify({
-    titulo: libro.titulo,
-    autor: libro.autor,
-    anio_publicacion:libro.anio_publicacion,
-    paginas: libro.paginas,    
-    isbn: libro.isbn,
-    portada: libro.portada,
-    lista: lista 
-  })
-});
+  const libro = window.libroSeleccionado;
+  if (!libro) {
+    alert('No se ha seleccionado ningún libro.');
+    return;
+  }
 
-    modalBootstrap.hide();
-  };
+  fetch('/libros/guardar', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+    },
+    body: JSON.stringify({
+      titulo: libro.titulo,
+      autor: libro.autor,
+      anio_publicacion: libro.anio_publicacion,
+      paginas: libro.paginas,
+      isbn: libro.isbn,
+      portada: libro.portada,
+      lista: lista 
+    })
+  })
+  .then(response => {
+    if (!response.ok) throw new Error("Libro ya existe en un grupo");
+    return response.json();
+  })
+  .then(data => {
+    mostrarModalMensaje(`📚 Libro guardado con éxito en ${lista.toUpperCase()}`, true);
+  })
+  .catch(error => {
+    mostrarModalMensaje("⚠️ Libro ya existente en un grupo", false);
+  });
+
+  modalBootstrap.hide();
+};
 
 }
 // Función para marcar el elemento centrado

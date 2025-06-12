@@ -46,13 +46,29 @@
   <h2>📖👓Libros actualmente en proceso</h2>
    
 </section>
-<section class="progreso">
-          <h2>📘 Lectura actual</h2>
-          <p><strong>Libro:</strong> "El Nombre del Viento"</p>
-          <p><strong>Página:</strong> 87 de 243</p>
-          <button class="btn btn-warning text-dark">Seguir leyendo</button>
-        </section>
+<section class="progreso d-flex justify-content-between align-items-center">
+  <div>
+    <h2>📘 Lectura actual</h2>
+    <p><strong>Libro:</strong> <span id="libroActual" style="display:none;">{{ $leyendo->first() ? $leyendo->first()->titulo : 'Ningún libro seleccionado' }}</span></p>
+ 
+    <p><strong>Página:</strong> <span id="paginaLibroActual" style="display:none;">{{ $ultimaPagina ?? '' }} de {{ $leyendo->first() ? $leyendo->first()->paginas : 'Ningún libro seleccionado' }}</span></p>
+   
 
+    <a class="btn btn-warning text-dark" href="{{ route('diario') }}">Seguir leyendo</a>
+  </div>
+  <div style="min-width: 250px;">
+    <form>
+    <select class="form-select" id="selectorLibro" style="background-color: #ffc107;">
+  <option value="" disabled selected>Selecciona un libro</option>
+  @foreach ($leyendo as $libro)
+    <option value="{{ $libro->id }}" data-titulo="{{ $libro->titulo }}" data-paginas="{{ $libro->paginas }}">
+      {{ $libro->titulo }}
+    </option>
+  @endforeach
+</select>
+    </form>
+  </div>
+</section>
         <section class="ultimos">
           <h2>📚 Últimos libros leídos</h2>
           <div class="d-flex gap-3">
@@ -86,5 +102,35 @@
       icon.textContent = abierto ? '📘' : '📖';
     });
   </script>
+     <script>
+document.addEventListener('DOMContentLoaded', function () {
+  const select = document.getElementById('selectorLibro');
+  const libroActual = document.getElementById('libroActual');
+  const paginaLibroActual = document.getElementById('paginaLibroActual');
+
+  select.addEventListener('change', function () {
+    // Mostrar los elementos ocultos al seleccionar un libro
+    libroActual.style.display = 'inline';
+    paginaLibroActual.style.display = 'inline';
+    const libroId = this.value;
+    const titulo = this.options[this.selectedIndex].dataset.titulo;
+    const totalPaginas = this.options[this.selectedIndex].dataset.paginas;
+
+    fetch(`/pagina-fin/${libroId}`)
+      .then(res => res.json())
+      .then(data => {
+        const ultima = data.pagina_fin ?? 0;
+        libroActual.textContent = titulo;
+        paginaLibroActual.textContent = `${ultima} de ${totalPaginas}`;
+      })
+      .catch(err => {
+        console.error("Error:", err);
+        libroActual.textContent = titulo;
+        paginaLibroActual.textContent = `¿? de ${totalPaginas}`;
+      });
+  });
+});
+</script>
+
 </body>
 </html>

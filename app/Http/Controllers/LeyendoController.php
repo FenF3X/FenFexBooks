@@ -6,15 +6,28 @@ use App\Models\Leyendo;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\MenuOpcion;
+use Illuminate\Support\Facades\DB;
+
 class LeyendoController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-     public function menus()
-    {
-    $opciones = MenuOpcion::where('visible', true)->orderBy('orden')->get();
-    return view('auth.leyendo', compact('opciones'));    
+    public function menus()
+{
+    $opciones = MenuOpcion::where('visible', true)->orderBy('orden')->get();    
+    $leyendo = Leyendo::all();
+    return view('auth.leyendo', compact('opciones', 'leyendo'));
+}
+
+    public function ultimaPaginaFin($id)
+{
+    $pagina = DB::table('diario_lectura')
+        ->where('libro_id', $id)
+        ->orderByDesc('created_at')
+        ->value('pagina_fin');
+
+    return response()->json(['pagina_fin' => $pagina]);
 }
 
     /**

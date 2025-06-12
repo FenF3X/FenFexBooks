@@ -46,26 +46,63 @@
   <h2>📓🖊️Diario de libros</h2>
    
 </section>
-<section class="progreso">
-          <h2>📘 Lectura actual</h2>
-          <p><strong>Libro:</strong> "El Nombre del Viento"</p>
-          <p><strong>Página:</strong> 87 de 243</p>
-          <button class="btn btn-warning text-dark">Seguir leyendo</button>
-        </section>
+<section class="progreso d-flex justify-content-between align-items-center">
+  <div>
+    <h2>📘 Lectura actual</h2>
+    <p><strong>Libro:</strong> <span id="libroActual" style="display:none;">{{ $leyendo->first() ? $leyendo->first()->titulo : 'Ningún libro seleccionado' }}</span></p>
+ 
+    <p><strong>Página:</strong> <span id="paginaLibroActual" style="display:none;">{{ $ultimaPagina ?? '' }} de {{ $leyendo->first() ? $leyendo->first()->paginas : 'Ningún libro seleccionado' }}</span></p>
+   
 
-        <section class="ultimos">
-          <h2>📚 Últimos libros leídos</h2>
-          <div class="d-flex gap-3">
-            <div class="libro-portada">📕</div>
-            <div class="libro-portada">📗</div>
-            <div class="libro-portada">📘</div>
-          </div>
-        </section>
+  </div>
+  <div style="min-width: 250px;">
+    <form>
+    <select class="form-select" id="selectorLibro" style="background-color: #ffc107;">
+  <option value="" disabled selected>Selecciona un libro</option>
+  @foreach ($leyendo as $libro)
+    <option value="{{ $libro->id }}" data-titulo="{{ $libro->titulo }}" data-paginas="{{ $libro->paginas }}">
+      {{ $libro->titulo }}
+    </option>
+  @endforeach
+</select>
+    </form>
+  </div>
+</section>
 
-        <section class="frase">
-          <blockquote>“Leer es soñar con los ojos abiertos.”</blockquote>
-          <p>Has leído <strong>12 libros</strong> este año.</p>
-        </section>
+       <section class="mt-4">
+          <h2>🧾✍️ Crear nota de lectura nueva</h2>
+
+  <form id="formDiario" onsubmit=" return verificarLibro()" action="{{ route('guardar.entrada') }}" method="POST">
+    @csrf
+    <div class="row mb-3">
+      <div class="col-md-3">
+        <label for="pagina_inicio" class="form-label">Página de inicio</label>
+        <input type="number" class="form-control" id="pagina_inicio" name="pagina_inicio" readonly value="" min="0" required>
+      </div>
+      <div class="col-md-3">
+        <label for="pagina_fin" class="form-label">Página de fin</label>
+        <input type="number" class="form-control" id="pagina_fin" name="pagina_fin" min="0" required>
+      </div>
+      <div class="col-md-6">
+        <label for="fecha_hora" class="form-label">Fecha y hora del registro</label>
+        <input type="text" class="form-control" id="fecha_hora" disabled>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label for="descripcion" class="form-label">Descripción (máx. 500 caracteres)</label>
+      <div class="position-relative">
+        <textarea class="form-control" id="descripcion" name="descripcion" rows="4" maxlength="500" required></textarea>
+        <small class="text-end position-absolute bottom-0 end-0 p-2" id="contadorCaracteres">0/500</small>
+        <div class="mt-3">
+          <button type="submit"  class="btn btn-success" style="background-color:#d4af37;color:#212529;border: 0px;">Guardar entrada</button>
+          <input type="hidden" name="libro_id" id="libro_id">
+          <input type="hidden" name="libro_terminado" id="libro_terminado" value="0">
+        </div>
+      </div>
+    </div>
+  </form>
+</section>
 </main>
     </div>
   </div>
@@ -86,5 +123,95 @@
       icon.textContent = abierto ? '📘' : '📖';
     });
   </script>
+   <script>
+document.addEventListener('DOMContentLoaded', function () {
+  const select = document.getElementById('selectorLibro');
+  const libroActual = document.getElementById('libroActual');
+  const paginaLibroActual = document.getElementById('paginaLibroActual');
+
+  select.addEventListener('change', function () {
+    // Mostrar los elementos ocultos al seleccionar un libro
+    libroActual.style.display = 'inline';
+    paginaLibroActual.style.display = 'inline';
+    const libroId = this.value;
+    const titulo = this.options[this.selectedIndex].dataset.titulo;
+    const totalPaginas = this.options[this.selectedIndex].dataset.paginas;
+  document.getElementById('libro_id').value = libroId;
+
+    fetch(`/pagina-fin/${libroId}`)
+      .then(res => res.json())
+      .then(data => {
+        const ultima = data.pagina_fin ?? 0;
+        libroActual.textContent = titulo;
+        paginaLibroActual.textContent = `${ultima} de ${totalPaginas}`;
+        document.getElementById('pagina_inicio').value = ultima; // Actualiza la página de inicio
+      })
+      .catch(err => {
+        console.error("Error:", err);
+        libroActual.textContent = titulo;
+        paginaLibroActual.textContent = `¿? de ${totalPaginas}`;
+      });
+  });
+});
+</script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const fechaHora = document.getElementById('fecha_hora');
+    const textarea = document.getElementById('descripcion');
+    const contador = document.getElementById('contadorCaracteres');
+
+    function actualizarFechaHora() {
+      const ahora = new Date();
+      const fechaFormateada = ahora.toLocaleDateString('es-ES');
+      const horaFormateada = ahora.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+      fechaHora.value = `${fechaFormateada} ${horaFormateada}`;
+    }
+
+    // Inicial y luego cada minuto (60000 ms)
+    actualizarFechaHora();
+    setInterval(actualizarFechaHora, 60000);
+
+    // Contador de caracteres
+    textarea.addEventListener('input', () => {
+      contador.textContent = `${textarea.value.length}/500`;
+    });
+  });
+</script>
+<script>
+  function verificarLibro() {
+    const select = document.getElementById('selectorLibro');
+    const libroId = select.value;
+
+    if (!libroId) {
+      alert('Por favor, selecciona un libro antes de guardar la entrada.');
+      return false; // Evita el envío del formulario
+    }
+    const paginaInicio = document.getElementById('pagina_inicio').value;
+    const paginaFin = document.getElementById('pagina_fin').value;
+    const selectedOption = select.options[select.selectedIndex];
+    const totalPaginas = selectedOption ? parseInt(selectedOption.getAttribute('data-paginas')) : 0;
+    console.log(`Total de páginas del libro: ${totalPaginas}`);
+    if (paginaInicio && paginaFin) {
+      if (parseInt(paginaInicio) > parseInt(paginaFin)) {
+        alert('La página de inicio no puede ser mayor que la de fin.');
+        return false;
+      }else
+      if (parseInt(paginaFin) > totalPaginas) {
+        alert('La página de fin no puede ser mayor que el total de páginas del libro.');
+        return false;
+      }else if(parseInt(paginaFin) == totalPaginas){
+        const confirmacion = confirm('Estás marcando el libro como finalizado. ¿Deseas continuar?');
+        if (!confirmacion) {
+          return false; // Evita el envío del formulario si el usuario cancela
+        }else{
+              document.getElementById('libro_terminado').value = "1";
+        }
+      }
+    }
+        return true; 
+
+  }
+</script>
+
 </body>
 </html>

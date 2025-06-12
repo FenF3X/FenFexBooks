@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\GuardarLibro;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\DB;
 class GuardarLibroController extends Controller
 {
     /**
@@ -35,19 +35,19 @@ class GuardarLibroController extends Controller
                 }
       
         if ($tabla == 'pendientes') {
-        $siguienteOrden = DB::table('pendientes')->max('orden_pendiente') + 1;
-        \DB::table($tabla)->insert([
-        'titulo' => $request->titulo,
-        'autor' => $request->autor,        
-        'anio_publicacion' => $request->anio_publicacion,
-        'paginas' => $request->paginas,
-        'isbn' => $request->isbn,
-        'portada' => $request->portada,
-        'orden_pendiente' => $siguienteOrden,
-        'created_at' => now(),
-        'updated_at' => now(),
-    ]);
-        } else {
+            $siguienteOrden = DB::table('pendientes')->max('orden_pendiente') + 1;
+            \DB::table($tabla)->insert([
+            'titulo' => $request->titulo,
+            'autor' => $request->autor,        
+            'anio_publicacion' => $request->anio_publicacion,
+            'paginas' => $request->paginas,
+            'isbn' => $request->isbn,
+            'portada' => $request->portada,
+            'orden_pendiente' => $siguienteOrden,
+            'created_at' => now(),
+            'updated_at' => now(),
+            ]);
+        } elseif($tabla=='leyendo'){ 
             \DB::table($tabla)->insert([
                 'titulo' => $request->titulo,
                 'autor' => $request->autor,        
@@ -58,7 +58,27 @@ class GuardarLibroController extends Controller
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
-        }
+             DB::table('diario_lectura')->insert([
+            'libro_id' => DB::getPdo()->lastInsertId(),
+            'pagina_inicio' => 0,
+            'pagina_fin' => 0,
+            'descripcion' => 'Inicio de lectura',
+            'dia' => now()->toDateString(),
+            'hora' => now()->toTimeString(),
+            'created_at' => now(),
+            ]);
+        }else {
+                \DB::table($tabla)->insert([
+                    'titulo' => $request->titulo,
+                    'autor' => $request->autor,        
+                    'anio_publicacion' => $request->anio_publicacion,
+                    'paginas' => $request->paginas,
+                    'isbn' => $request->isbn,
+                    'portada' => $request->portada,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
         return response()->json(['status' => 'ok']);
     }
 

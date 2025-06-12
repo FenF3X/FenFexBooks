@@ -9,8 +9,7 @@ use App\Http\Controllers\LeidosController;
 use App\Http\Controllers\FavoritosController;
 use App\Http\Controllers\DiarioController;
 use App\Http\Controllers\ConfiguracionController;
-use App\Http\Controllers\GuardarLibroController;
-
+use App\Http\Controllers\GuardarLibroController; 
 Route::get('/', [LoginController::class, 'viewForm'])->name('login');
 Route::post('/', [LoginController::class, 'login']);
 Route::get('logout', [LoginController::class, 'logout'])->name('logout');
@@ -26,6 +25,7 @@ Route::get('/porleer', [PendientesController::class, 'menus'])
 Route::get('/leyendo', [LeyendoController::class, 'menus'])
     ->middleware('auth')
     ->name('leyendo');
+
     
 Route::get('/leidos', [LeidosController::class, 'menus'])
     ->middleware('auth')
@@ -44,3 +44,7 @@ Route::get('/ajustes', [ConfiguracionController::class, 'menus'])
     ->name('configuracion');
 
 Route::post('/libros/guardar',[GuardarLibroController::class, 'store']);
+
+Route::get('/pagina-fin/{id}', [App\Http\Controllers\LeyendoController::class, 'ultimaPaginaFin']);
+Route::get('/pagina-fin/{id}', [App\Http\Controllers\DiarioController::class, 'ultimaPaginaFin']);
+Route::post('/guardar-entrada', [DiarioController::class, 'store'])->name('guardar.entrada');
