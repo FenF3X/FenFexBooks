@@ -19,19 +19,21 @@
   <div 
     class="menu-toggle d-md-none  text-dark position-fixed rounded-circle shadow"
     id="toggleMenu"
-    style="bottom: 24px; right: 24px; width: 56px; height: 56px; background: #fff; display: flex; align-items: center; justify-content: center; z-index: 1050; cursor: pointer;"
+    style="bottom: 24px; right: 24px; width: 56px; height: 56px; background: #ffc107; display: flex; align-items: center; justify-content: center; z-index: 1050; cursor: pointer;"
   >
     <span id="menuIcon" style="font-size: 2rem;">📘</span>
   </div>
 
   <!-- Menú móvil -->
   <div class="menu-movil d-md-none d-none" id="menuMovil">
-    <a href="#" class="libro">Inicio</a>
-    <a href="#" class="libro">Mis Lecturas</a>
-    <a href="#" class="libro">Añadir Libro</a>
-    <a href="#" class="libro">Favoritos</a>
-    <a href="#" class="libro">Calendario</a>
-    <a href="#" class="libro">Buscar</a>
+     @forelse($opciones as $opcion)
+          <a href="{{ $opcion['ruta']}}" class="libro">
+            <span class="material-symbols-outlined">{{ $opcion['icono'] }}</span>
+            <span class="texto-opcion">{{$opcion['nombre']}}</span>
+          </a>
+        @empty
+          <p>No hay opciones disponibles.</p>
+        @endforelse
   </div>
 
   <div class="container-fluid">
@@ -56,16 +58,20 @@
 
     <a class="btn btn-warning text-dark" href="{{ route('diario') }}">Seguir leyendo</a>
   </div>
-  <div style="min-width: 250px;">
+  <div class="w-100" style="max-width: 350px; min-width: 200px;">
     <form>
-    <select class="form-select" id="selectorLibro" style="background-color: #ffc107;">
-  <option value="" disabled selected>Selecciona un libro</option>
-  @foreach ($leyendo as $libro)
-    <option value="{{ $libro->id }}" data-titulo="{{ $libro->titulo }}" data-paginas="{{ $libro->paginas }}">
-      {{ $libro->titulo }}
-    </option>
-  @endforeach
-</select>
+      <select 
+        class="form-select form-select-lg mb-3" 
+        id="selectorLibro" 
+        style="background-color: #ffc107; width: 100%;"
+      >
+        <option value="" disabled selected>Selecciona un libro</option>
+        @foreach ($leyendo as $libro)
+          <option value="{{ $libro->id }}" data-titulo="{{ $libro->titulo }}" data-paginas="{{ $libro->paginas }}">
+            {{ $libro->titulo }}
+          </option>
+        @endforeach
+      </select>
     </form>
   </div>
 </section>
@@ -82,6 +88,8 @@
           <blockquote>“Leer es soñar con los ojos abiertos.”</blockquote>
           <p>Has leído <strong>12 libros</strong> este año.</p>
         </section>
+        <div style="height: 80px;"></div>
+
 </main>
     </div>
   </div>
@@ -102,16 +110,25 @@
       icon.textContent = abierto ? '📘' : '📖';
     });
   </script>
-     <script>
+  <script>
 document.addEventListener('DOMContentLoaded', function () {
   const select = document.getElementById('selectorLibro');
   const libroActual = document.getElementById('libroActual');
   const paginaLibroActual = document.getElementById('paginaLibroActual');
 
-  select.addEventListener('change', function () {
-    // Mostrar los elementos ocultos al seleccionar un libro
+  // Si ya hay libro guardado, cargarlo
+  const guardado = JSON.parse(localStorage.getItem('libroSeleccionado'));
+  if (guardado) {
     libroActual.style.display = 'inline';
     paginaLibroActual.style.display = 'inline';
+    libroActual.textContent = guardado.titulo;
+    paginaLibroActual.textContent = `${guardado.paginasLeidas} de ${guardado.totalPaginas}`;
+    // Seleccionar opción en el select
+    const opcion = [...select.options].find(opt => opt.value == guardado.id);
+    if (opcion) select.value = guardado.id;
+  }
+
+  select.addEventListener('change', function () {
     const libroId = this.value;
     const titulo = this.options[this.selectedIndex].dataset.titulo;
     const totalPaginas = this.options[this.selectedIndex].dataset.paginas;
@@ -120,8 +137,20 @@ document.addEventListener('DOMContentLoaded', function () {
       .then(res => res.json())
       .then(data => {
         const ultima = data.pagina_fin ?? 0;
+
+        libroActual.style.display = 'inline';
+        paginaLibroActual.style.display = 'inline';
         libroActual.textContent = titulo;
         paginaLibroActual.textContent = `${ultima} de ${totalPaginas}`;
+
+        // Guardar en localStorage
+        const libro = {
+          id: libroId,
+          titulo: titulo,
+          paginasLeidas: ultima,
+          totalPaginas: totalPaginas
+        };
+        localStorage.setItem('libroSeleccionado', JSON.stringify(libro));
       })
       .catch(err => {
         console.error("Error:", err);
@@ -131,6 +160,7 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 });
 </script>
+
 
 </body>
 </html>

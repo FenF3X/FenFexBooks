@@ -11,7 +11,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" id="tema" href="{{ asset('css/pendientes.css') }}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
-
+  
 </head>
 <body>
 
@@ -19,19 +19,21 @@
   <div 
     class="menu-toggle d-md-none  text-dark position-fixed rounded-circle shadow"
     id="toggleMenu"
-    style="bottom: 24px; right: 24px; width: 56px; height: 56px; background: #fff; display: flex; align-items: center; justify-content: center; z-index: 1050; cursor: pointer;"
+    style="bottom: 24px; right: 24px; width: 56px; height: 56px; background: #ffc107; display: flex; align-items: center; justify-content: center; z-index: 1050; cursor: pointer;"
   >
     <span id="menuIcon" style="font-size: 2rem;">📘</span>
   </div>
 
   <!-- Menú móvil -->
-  <div class="menu-movil d-md-none d-none" id="menuMovil">
-    <a href="#" class="libro">Inicio</a>
-    <a href="#" class="libro">Mis Lecturas</a>
-    <a href="#" class="libro">Añadir Libro</a>
-    <a href="#" class="libro">Favoritos</a>
-    <a href="#" class="libro">Calendario</a>
-    <a href="#" class="libro">Buscar</a>
+   <div class="menu-movil d-md-none d-none" id="menuMovil">
+     @forelse($opciones as $opcion)
+          <a href="{{ $opcion['ruta']}}" class="libro">
+            <span class="material-symbols-outlined">{{ $opcion['icono'] }}</span>
+            <span class="texto-opcion">{{$opcion['nombre']}}</span>
+          </a>
+        @empty
+          <p>No hay opciones disponibles.</p>
+        @endforelse
   </div>
 
   <div class="container-fluid">
@@ -66,6 +68,8 @@
           <blockquote>“Leer es soñar con los ojos abiertos.”</blockquote>
           <p>Has leído <strong>12 libros</strong> este año.</p>
         </section>
+        <div style="height: 80px;"></div>
+
 </main>
     </div>
   </div>

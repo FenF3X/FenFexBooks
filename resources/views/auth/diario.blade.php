@@ -19,19 +19,21 @@
   <div 
     class="menu-toggle d-md-none  text-dark position-fixed rounded-circle shadow"
     id="toggleMenu"
-    style="bottom: 24px; right: 24px; width: 56px; height: 56px; background: #fff; display: flex; align-items: center; justify-content: center; z-index: 1050; cursor: pointer;"
+    style="bottom: 24px; right: 24px; width: 56px; height: 56px; background: #ffc107; display: flex; align-items: center; justify-content: center; z-index: 1050; cursor: pointer;"
   >
     <span id="menuIcon" style="font-size: 2rem;">📘</span>
   </div>
 
   <!-- Menú móvil -->
-  <div class="menu-movil d-md-none d-none" id="menuMovil">
-    <a href="#" class="libro">Inicio</a>
-    <a href="#" class="libro">Mis Lecturas</a>
-    <a href="#" class="libro">Añadir Libro</a>
-    <a href="#" class="libro">Favoritos</a>
-    <a href="#" class="libro">Calendario</a>
-    <a href="#" class="libro">Buscar</a>
+   <div class="menu-movil d-md-none d-none" id="menuMovil">
+     @forelse($opciones as $opcion)
+          <a href="{{ $opcion['ruta']}}" class="libro">
+            <span class="material-symbols-outlined">{{ $opcion['icono'] }}</span>
+            <span class="texto-opcion">{{$opcion['nombre']}}</span>
+          </a>
+        @empty
+          <p>No hay opciones disponibles.</p>
+        @endforelse
   </div>
 
   <div class="container-fluid">
@@ -55,16 +57,20 @@
    
 
   </div>
-  <div style="min-width: 250px;">
+    <div class="w-100" style="max-width: 350px; min-width: 200px;">
     <form>
-    <select class="form-select" id="selectorLibro" style="background-color: #ffc107;">
-  <option value="" disabled selected>Selecciona un libro</option>
-  @foreach ($leyendo as $libro)
-    <option value="{{ $libro->id }}" data-titulo="{{ $libro->titulo }}" data-paginas="{{ $libro->paginas }}">
-      {{ $libro->titulo }}
-    </option>
-  @endforeach
-</select>
+      <select 
+        class="form-select form-select-lg mb-3" 
+        id="selectorLibro" 
+        style="background-color: #ffc107; width: 100%;"
+      >
+        <option value="" disabled selected>Selecciona un libro</option>
+        @foreach ($leyendo as $libro)
+          <option value="{{ $libro->id }}" data-titulo="{{ $libro->titulo }}" data-paginas="{{ $libro->paginas }}">
+            {{ $libro->titulo }}
+          </option>
+        @endforeach
+      </select>
     </form>
   </div>
 </section>
@@ -123,6 +129,7 @@
     @endforeach
   @endif
 </section>
+<div style="height: 80px;"></div>
 
 </main>
     </div>
@@ -185,28 +192,66 @@ if (notasDelLibro) notasDelLibro.style.display = 'block';
 });
 </script>
 <script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const fechaHora = document.getElementById('fecha_hora');
-    const textarea = document.getElementById('descripcion');
-    const contador = document.getElementById('contadorCaracteres');
+document.addEventListener('DOMContentLoaded', function () {
+  const select = document.getElementById('selectorLibro');
+  const libroActual = document.getElementById('libroActual');
+  const paginaLibroActual = document.getElementById('paginaLibroActual');
 
-    function actualizarFechaHora() {
-      const ahora = new Date();
-      const fechaFormateada = ahora.toLocaleDateString('es-ES');
-      const horaFormateada = ahora.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
-      fechaHora.value = `${fechaFormateada} ${horaFormateada}`;
-    }
+  // Función para cargar datos del libro seleccionado
+  function cargarDatosLibro(libroId, titulo, totalPaginas) {
+    libroActual.style.display = 'inline';
+    paginaLibroActual.style.display = 'inline';
+    document.getElementById('notas').style.display = 'block';
 
-    // Inicial y luego cada minuto (60000 ms)
-    actualizarFechaHora();
-    setInterval(actualizarFechaHora, 60000);
+    document.querySelectorAll('.notas-libro').forEach(div => div.style.display = 'none');
+    const notasDelLibro = document.getElementById('notas-libro-' + libroId);
+    if (notasDelLibro) notasDelLibro.style.display = 'block';
 
-    // Contador de caracteres
-    textarea.addEventListener('input', () => {
-      contador.textContent = `${textarea.value.length}/500`;
-    });
+    document.getElementById('libro_id').value = libroId;
+
+    fetch(`/pagina-fin/${libroId}`)
+      .then(res => res.json())
+      .then(data => {
+        const ultima = data.pagina_fin ?? 0;
+        libroActual.textContent = titulo;
+        paginaLibroActual.textContent = `${ultima} de ${totalPaginas}`;
+        document.getElementById('pagina_inicio').value = ultima;
+
+        // Guardar en localStorage
+        localStorage.setItem('libroSeleccionado', JSON.stringify({
+          id: libroId,
+          titulo: titulo,
+          paginasLeidas: ultima,
+          totalPaginas: totalPaginas
+        }));
+      })
+      .catch(err => {
+        console.error("Error:", err);
+        libroActual.textContent = titulo;
+        paginaLibroActual.textContent = `¿? de ${totalPaginas}`;
+      });
+  }
+
+  // Evento al cambiar el selector
+  select.addEventListener('change', function () {
+    const libroId = this.value;
+    const titulo = this.options[this.selectedIndex].dataset.titulo;
+    const totalPaginas = this.options[this.selectedIndex].dataset.paginas;
+    cargarDatosLibro(libroId, titulo, totalPaginas);
   });
+
+  // Si hay libro en memoria, seleccionarlo automáticamente
+  const libroGuardado = JSON.parse(localStorage.getItem('libroSeleccionado'));
+  if (libroGuardado && libroGuardado.id) {
+    const option = [...select.options].find(opt => opt.value == libroGuardado.id);
+    if (option) {
+      option.selected = true;
+      cargarDatosLibro(libroGuardado.id, libroGuardado.titulo, libroGuardado.totalPaginas);
+    }
+  }
+});
 </script>
+
 <script>
   function verificarLibro() {
     const select = document.getElementById('selectorLibro');
