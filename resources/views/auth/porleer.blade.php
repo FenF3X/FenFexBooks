@@ -48,11 +48,11 @@
   <h2> 🔖📚 Libros pendientes</h2>
    
 </section>
-<section class="progreso">
+        <section class="progreso">
           <h2>📘 Lectura actual</h2>
-          <p><strong>Libro:</strong> "El Nombre del Viento"</p>
-          <p><strong>Página:</strong> 87 de 243</p>
-          <button class="btn btn-warning text-dark">Seguir leyendo</button>
+          <p><strong>Libro:</strong> <span id="titulo"></span></p>
+          <p><strong>Página:</strong> <span id="paginasLeidas"></span></p>
+          <a class="btn btn-warning text-dark" href="{{ route('diario')}}">Seguir leyendo</a>
         </section>
 
         <section class="ultimos">
@@ -90,5 +90,24 @@
       icon.textContent = abierto ? '📘' : '📖';
     });
   </script>
+  <script>
+document.addEventListener('DOMContentLoaded', function () {
+  const libroActual = document.getElementById('titulo');
+  const paginaLibroActual = document.getElementById('paginasLeidas');
+
+  const guardado = JSON.parse(localStorage.getItem('libroSeleccionado'));
+
+  if (guardado && libroActual && paginaLibroActual) {
+    libroActual.textContent = guardado.titulo;
+    paginaLibroActual.textContent = `${guardado.paginasLeidas} de ${guardado.totalPaginas}`;
+    libroActual.style.display = 'inline';
+    paginaLibroActual.style.display = 'inline';
+  } else {
+    libroActual.textContent = 'Ningún libro seleccionado';
+    paginaLibroActual.textContent = '';
+  }
+});
+</script>
+
 </body>
 </html>
