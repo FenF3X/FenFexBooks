@@ -113,6 +113,7 @@
           <button type="submit"  class="btn btn-success" style="background-color:#d4af37;color:#212529;border: 0px;">Guardar entrada</button>
           <input type="hidden" name="libro_id" id="libro_id">
           <input type="hidden" name="libro_terminado" id="libro_terminado" value="0">
+          
         </div>
       </div>
     </div>
@@ -299,8 +300,27 @@ document.addEventListener('DOMContentLoaded', function () {
           return false; // Evita el envío del formulario si el usuario cancela
         }else{
               document.getElementById('libro_terminado').value = "1";
-        }
-      }
+              localStorage.removeItem('libroSeleccionado'); // ⬅️ BORRAR del localStorage
+        // Asignar automáticamente otro libro si hay más opciones
+    const select = document.getElementById('selectorLibro');
+    const opcionesDisponibles = [...select.options].filter(opt => opt.value && opt.value !== libroId);
+
+    if (opcionesDisponibles.length > 0) {
+      const nuevaOpcion = opcionesDisponibles[0]; // Elige el primero disponible
+      nuevaOpcion.selected = true;
+
+      // Disparar el evento de cambio manualmente
+      select.dispatchEvent(new Event('change'));
+    } else {
+      // Si no hay más libros, deselecciona todo y oculta datos
+      select.selectedIndex = 0;
+      document.getElementById('libroActual').textContent = 'Ningún libro seleccionado';
+      document.getElementById('paginaLibroActual').textContent = '';
+      document.getElementById('notas').style.display = 'none';
+      document.getElementById('pagina_inicio').value = 0;
+    }
+  }
+}
     }
         return true; 
 

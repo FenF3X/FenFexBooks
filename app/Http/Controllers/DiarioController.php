@@ -44,8 +44,11 @@ class DiarioController extends Controller
      */
     public function store(Request $request)
     {
+            $libro = Leyendo::find($request->libro_id);
+
         Diario::create([
             'libro_id' => $request->libro_id,
+            'titulo_libro'  => $libro->titulo ?? 'sin titulo',
             'pagina_inicio' => $request->pagina_inicio,
             'pagina_fin' => $request->pagina_fin,
             'descripcion' => $request->descripcion,
@@ -53,7 +56,6 @@ class DiarioController extends Controller
             'hora' => now()->format('H:i:s'),
             'created_at' => now(),
         ]);
-
         if ($request->libro_terminado == "1") {
         Leidos::create([
             'titulo' => Leyendo::find($request->libro_id)->titulo,

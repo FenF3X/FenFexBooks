@@ -23,7 +23,7 @@ class LoginController extends Authenticatable
         
         if(Auth::attempt($credentials)) {
             // Authentication passed, redirect to intended page
-            return redirect('inicio');
+            return redirect()->route('inicio');
         }else {
             $error = 'Invalid credentials';
             return view('login', compact('error'));

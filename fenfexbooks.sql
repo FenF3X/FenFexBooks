@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 12-06-2025 a las 13:45:37
+-- Tiempo de generación: 13-06-2025 a las 11:26:35
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -30,9 +30,10 @@ SET time_zone = "+00:00";
 CREATE TABLE `diario_lectura` (
   `id` int(11) NOT NULL,
   `libro_id` int(11) DEFAULT NULL,
+  `titulo_libro` varchar(255) DEFAULT NULL,
   `pagina_inicio` int(11) NOT NULL DEFAULT 0,
   `pagina_fin` int(11) NOT NULL DEFAULT 0,
-  `descripcion` varchar(500) DEFAULT NULL,
+  `descripcion` text DEFAULT NULL,
   `dia` date NOT NULL,
   `hora` time NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
@@ -40,13 +41,22 @@ CREATE TABLE `diario_lectura` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Volcado de datos para la tabla `diario_lectura`
+-- Disparadores `diario_lectura`
 --
+DELIMITER $$
+CREATE TRIGGER `insertar_titulo_libro` BEFORE INSERT ON `diario_lectura` FOR EACH ROW BEGIN
+  DECLARE nombre_libro VARCHAR(255);
 
-INSERT INTO `diario_lectura` (`id`, `libro_id`, `pagina_inicio`, `pagina_fin`, `descripcion`, `dia`, `hora`, `created_at`, `updated_at`) VALUES
-(5, 5, 0, 50, 'Lectura inicial', '2025-06-12', '10:26:36', '2025-06-12 08:26:36', '2025-06-12 08:26:36'),
-(6, 5, 50, 100, 'Continuacion de lectura', '2025-06-12', '12:35:01', '2025-06-12 10:35:01', '2025-06-12 10:35:01'),
-(19, 10, 0, 0, 'Inicio de lectura', '2025-06-12', '12:54:54', '2025-06-12 10:54:54', '2025-06-12 10:54:54');
+  -- Buscar el título en la tabla 'leyendo' usando el ID del libro
+  SELECT titulo INTO nombre_libro
+  FROM leyendo
+  WHERE id = NEW.libro_id;
+
+  -- Asignar directamente el título al nuevo registro
+  SET NEW.titulo_libro = nombre_libro;
+END
+$$
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -65,14 +75,6 @@ CREATE TABLE `favoritos` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `favoritos`
---
-
-INSERT INTO `favoritos` (`id`, `titulo`, `autor`, `anio_publicacion`, `paginas`, `isbn`, `portada`, `created_at`, `updated_at`) VALUES
-(1, '¡Hola, mi nuevo amigo! (Hello, New Friend!)', 'Autor desconocido', 2023, 28, '9781665938662', 'http://books.google.com/books/content?id=31KsEAAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api', '2025-06-12 04:38:09', '2025-06-12 04:38:09'),
-(2, 'Anhelo (Serie Crave 1)', 'Tracy Wolff', 2020, 583, '9788408233862', 'http://books.google.com/books/content?id=qenzDwAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api', '2025-06-12 10:56:51', '2025-06-12 10:56:51');
 
 -- --------------------------------------------------------
 
@@ -93,15 +95,6 @@ CREATE TABLE `leidos` (
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Volcado de datos para la tabla `leidos`
---
-
-INSERT INTO `leidos` (`id`, `titulo`, `autor`, `anio_publicacion`, `paginas`, `isbn`, `portada`, `fin_lectura`, `created_at`, `updated_at`) VALUES
-(1, 'Enigmas sin resolver', 'Iker Jiménez Elizari', 2006, 364, '9788441417748', 'http://books.google.com/books/content?id=2jhzc_0smZMC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api', '2025-06-12', '2025-06-12 10:41:08', '2025-06-12 10:41:08'),
-(2, 'Furia (Serie Crave 2)', 'Tracy Wolff', 2021, 736, '9788408241027', 'http://books.google.com/books/content?id=sTQXEAAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api', '2025-06-12', '2025-06-12 10:42:13', '2025-06-12 10:42:13'),
-(4, 'Anhelo (Serie Crave 1)', 'Tracy Wolff', 2020, 583, '9788408233862', 'http://books.google.com/books/content?id=qenzDwAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api', NULL, '2025-06-12 10:56:48', '2025-06-12 10:56:48');
-
 -- --------------------------------------------------------
 
 --
@@ -119,37 +112,6 @@ CREATE TABLE `leyendo` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `leyendo`
---
-
-INSERT INTO `leyendo` (`id`, `titulo`, `autor`, `anio_publicacion`, `paginas`, `isbn`, `portada`, `created_at`, `updated_at`) VALUES
-(5, 'Anhelo (Serie Crave 1)', 'Tracy Wolff', 2020, 583, '9788408233862', 'http://books.google.com/books/content?id=qenzDwAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api', '2025-06-12 06:17:11', '2025-06-12 06:17:11'),
-(10, 'Los cinco anhelos', 'David Richo', 2018, 145, '9786073163668', 'http://books.google.com/books/content?id=nuRLDwAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api', '2025-06-12 10:54:54', '2025-06-12 10:54:54');
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `libros`
---
-
-CREATE TABLE `libros` (
-  `id` int(11) NOT NULL,
-  `titulo` varchar(255) DEFAULT NULL,
-  `autor` varchar(255) DEFAULT NULL,
-  `anio` int(11) DEFAULT NULL,
-  `genero` varchar(100) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `libros`
---
-
-INSERT INTO `libros` (`id`, `titulo`, `autor`, `anio`, `genero`) VALUES
-(1, 'Cien años de soledad', 'Gabriel García Márquez', 1967, 'Realismo mágico'),
-(3, 'El nombre del viento', 'Patrick Rothfuss', 2007, 'Fantasía'),
-(4, 'La sombra del viento', 'Carlos Ruiz Zafón', 2001, 'Misterio');
 
 -- --------------------------------------------------------
 
@@ -223,18 +185,6 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `password_reset_tokens`
---
-
-CREATE TABLE `password_reset_tokens` (
-  `email` varchar(255) NOT NULL,
-  `token` varchar(255) NOT NULL,
-  `created_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
 -- Estructura de tabla para la tabla `pendientes`
 --
 
@@ -250,14 +200,6 @@ CREATE TABLE `pendientes` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `pendientes`
---
-
-INSERT INTO `pendientes` (`id`, `titulo`, `autor`, `anio_publicacion`, `paginas`, `isbn`, `portada`, `orden_pendiente`, `created_at`, `updated_at`) VALUES
-(1, 'Anhelo (Serie Crave 1)', 'Tracy Wolff', 2020, 583, ' 978-8408232995', 'http://books.google.com/books/content?id=qenzDwAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api', 1, '2025-06-12 04:04:48', '2025-06-12 04:04:48'),
-(2, 'Anhelo (Serie Crave 1)', 'Tracy Wolff', 2020, 583, '9788408233862', 'http://books.google.com/books/content?id=qenzDwAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api', 2, '2025-06-12 10:58:55', '2025-06-12 10:58:55');
 
 -- --------------------------------------------------------
 
@@ -279,7 +221,9 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('8w3IVbvCKeiaizsVm0CsfpemHtU9nSbmaYcVOi5U', 3, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoiOHRSRlE2bG83Z2ZrNnRmdnB0WVNoYk4wMHpndWwwWTZnVGNyUFRWcSI7czozOiJ1cmwiO2E6MDp7fXM6OToiX3ByZXZpb3VzIjthOjE6e3M6MzoidXJsIjtzOjI4OiJodHRwOi8vbG9jYWxob3N0OjgwMDAvZGlhcmlvIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6Mzt9', 1749728636);
+('GW8AGm9iPTKptsR6O6Tp0cFKpvXtdsU42274rGkr', 3, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoiNXZlUE9VZ25pN2pSbEVyOGVkaThvcUFvT09nRlhYRjlmUUEzMk5lZSI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czozOiJ1cmwiO2E6MTp7czo4OiJpbnRlbmRlZCI7czoyODoiaHR0cDovL2xvY2FsaG9zdDo4MDAwL2luaWNpbyI7fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjM7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6Mjg6Imh0dHA6Ly9sb2NhbGhvc3Q6ODAwMC9sZWlkb3MiO319', 1749806638),
+('sQDR2i693vnY06XLWv2aEvvd8WnhemDWdEhSIOg1', 3, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoiZ3BHMEF6T1c2Q3JQZGJXa1h5SFpJM2kzZnRqU1VkWU1IWmNYTTNMUiI7czozOiJ1cmwiO2E6MTp7czo4OiJpbnRlbmRlZCI7czoyODoiaHR0cDovL2xvY2FsaG9zdDo4MDAwL2luaWNpbyI7fXM6OToiX3ByZXZpb3VzIjthOjE6e3M6MzoidXJsIjtzOjIxOiJodHRwOi8vbG9jYWxob3N0OjgwMDAiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjUwOiJsb2dpbl93ZWJfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aTozO30=', 1749806563),
+('waTOxF23Lz9foFs3RhfeRfpgba9mvTgVC8eD16xq', 3, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoiSHJxR2dGbTdmS1JYc1lGdFB4WWNOS3JmUlNVaklET25PQktJNjZyVSI7czozOiJ1cmwiO2E6MTp7czo4OiJpbnRlbmRlZCI7czoyODoiaHR0cDovL2xvY2FsaG9zdDo4MDAwL2xlaWRvcyI7fXM6OToiX3ByZXZpb3VzIjthOjE6e3M6MzoidXJsIjtzOjI4OiJodHRwOi8vbG9jYWxob3N0OjgwMDAvaW5pY2lvIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6Mzt9', 1749806704);
 
 -- --------------------------------------------------------
 
@@ -334,12 +278,6 @@ ALTER TABLE `leyendo`
   ADD UNIQUE KEY `isbn` (`isbn`);
 
 --
--- Indices de la tabla `libros`
---
-ALTER TABLE `libros`
-  ADD PRIMARY KEY (`id`);
-
---
 -- Indices de la tabla `login`
 --
 ALTER TABLE `login`
@@ -357,12 +295,6 @@ ALTER TABLE `menu`
 --
 ALTER TABLE `migrations`
   ADD PRIMARY KEY (`id`);
-
---
--- Indices de la tabla `password_reset_tokens`
---
-ALTER TABLE `password_reset_tokens`
-  ADD PRIMARY KEY (`email`);
 
 --
 -- Indices de la tabla `pendientes`
@@ -393,7 +325,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT de la tabla `diario_lectura`
 --
 ALTER TABLE `diario_lectura`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=55;
 
 --
 -- AUTO_INCREMENT de la tabla `favoritos`
@@ -405,19 +337,13 @@ ALTER TABLE `favoritos`
 -- AUTO_INCREMENT de la tabla `leidos`
 --
 ALTER TABLE `leidos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT de la tabla `leyendo`
 --
 ALTER TABLE `leyendo`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
-
---
--- AUTO_INCREMENT de la tabla `libros`
---
-ALTER TABLE `libros`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT de la tabla `login`
@@ -457,7 +383,6 @@ ALTER TABLE `users`
 -- Filtros para la tabla `diario_lectura`
 --
 ALTER TABLE `diario_lectura`
-  ADD CONSTRAINT `diario_lectura_ibfk_1` FOREIGN KEY (`libro_id`) REFERENCES `leyendo` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `diario_lectura_libro_id_foreign` FOREIGN KEY (`libro_id`) REFERENCES `leyendo` (`id`) ON DELETE SET NULL;
 COMMIT;
 
