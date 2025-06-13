@@ -6,6 +6,7 @@ use App\Models\Leidos;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\MenuOpcion;
+use App\Models\Diario; // Assuming Diario is a model you want to use
 class LeidosController extends Controller
 {
     /**
@@ -14,7 +15,10 @@ class LeidosController extends Controller
     public function menus()
     {
     $opciones = MenuOpcion::where('visible', true)->orderBy('orden')->get();
-    return view('auth.leidos', compact('opciones'));    
+    $leidos = Leidos::orderByDesc('created_at')->get();
+    $cantidad = $leidos->count();
+    $notas = Diario::all()->groupBy('titulo_libro');
+    return view('auth.leidos', compact('opciones','leidos','notas', 'cantidad'));    
     }
 
     /**

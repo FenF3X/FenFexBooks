@@ -11,6 +11,16 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" id="tema" href="{{ asset('css/pendientes.css') }}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+<style>
+  #carruselLeidos::-webkit-scrollbar {
+    display: none;
+  }
+
+  #carruselLeidos {
+    -ms-overflow-style: none;  /* IE y Edge */
+    scrollbar-width: none;     /* Firefox */
+  }
+</style>
 
 </head>
 <body>
@@ -55,18 +65,39 @@
           <a class="btn btn-warning text-dark" href="{{ route('diario')}}">Seguir leyendo</a>
         </section>
 
-        <section class="ultimos">
-          <h2>📚 Últimos libros leídos</h2>
-          <div class="d-flex gap-3">
-            <div class="libro-portada">📕</div>
-            <div class="libro-portada">📗</div>
-            <div class="libro-portada">📘</div>
-          </div>
-        </section>
+        <section class="ultimos position-relative">
+  <h2>📚 Mis libros favoritos ⭐</h2>
+    @if($favoritos->isEmpty())
+      <p class="text-white" id="sinfavoritos">No tienes libros favoritos aún.</p>
+      @else
+  <!-- Flecha izquierda -->
+  <button id="flechaIzq" class="btn btn-light position-absolute top-50 start-0 translate-middle-y d-none d-md-inline" style="z-index: 10;">
+    ◀
+  </button>
+
+  <!-- Contenedor deslizante -->
+  <div id="carruselLeidos" class="d-flex gap-3 flex-nowrap overflow-auto px-5 py-2" style="scroll-behavior: smooth;">
+    @foreach($favoritos as $libro)
+      <div class="card shadow-sm" style="width: 120px; min-width: 120px; background-color: #f8f9fa;">
+        <img src="{{ $libro->portada }}" class="card-img-top" alt="Portada de {{ $libro->titulo }}" style="height: 180px; object-fit: cover;">
+        <div class="card-body p-2">
+          <p class="card-text text-center small" style="font-weight: bold;">{{ Str::limit($libro->titulo, 40) }}</p>
+        </div>
+      </div>
+    @endforeach
+  </div>
+
+  <!-- Flecha derecha -->
+  <button id="flechaDer" class="btn btn-light position-absolute top-50 end-0 translate-middle-y d-none d-md-inline" style="z-index: 10;">
+    ▶
+  </button>
+  @endif
+</section>
+
 
         <section class="frase">
           <blockquote>“Leer es soñar con los ojos abiertos.”</blockquote>
-          <p>Has leído <strong>12 libros</strong> este año.</p>
+          <p>Has leído <strong><span>{{ $cantidad }}</span> @if($cantidad == 1) <span> libro</span> @else <span> libros</span>@endif</strong> este año.</p>
         </section>
         <div style="height: 80px;"></div>
 </main>
@@ -107,5 +138,36 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 });
 </script>
+<script>
+  function actualizarFlechasLeidos() {
+    const carrusel = document.getElementById("carruselLeidos");
+    const flechaIzq = document.getElementById("flechaIzq");
+    const flechaDer = document.getElementById("flechaDer");
+
+    setTimeout(() => {
+      const hayDesbordamiento = carrusel.scrollWidth > carrusel.clientWidth;
+      flechaIzq.style.display = hayDesbordamiento ? 'inline-block' : 'none';
+      flechaDer.style.display = hayDesbordamiento ? 'inline-block' : 'none';
+    }, 100);
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const carrusel = document.getElementById("carruselLeidos");
+    const flechaIzq = document.getElementById("flechaIzq");
+    const flechaDer = document.getElementById("flechaDer");
+
+    flechaIzq.addEventListener("click", () => {
+      carrusel.scrollBy({ left: -150, behavior: "smooth" });
+    });
+
+    flechaDer.addEventListener("click", () => {
+      carrusel.scrollBy({ left: 150, behavior: "smooth" });
+    });
+
+    actualizarFlechasLeidos();
+    window.addEventListener('resize', actualizarFlechasLeidos);
+  });
+</script>
+
 </body>
 </html>

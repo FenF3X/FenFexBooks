@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\MenuOpcion;
-
+use App\Models\Leidos; // Assuming Leidos is a model you want to use
 class menuOpcionesController extends Controller
 {
     /**
@@ -16,7 +16,7 @@ class menuOpcionesController extends Controller
         $opciones = MenuOpcion::where('visible', true)
             ->orderby('orden')
             ->get();
-
-        return view('auth.inicio', compact('opciones'));
+         $cantidad = Leidos::all()->count();
+        return view('auth.inicio', compact('opciones','cantidad'));
      }
 }

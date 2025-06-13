@@ -48,6 +48,7 @@ document.addEventListener("DOMContentLoaded", function () {
             document.querySelector('.logo').style.color = "#000";
             document.querySelector('footer').style.color = "#8b5a2b";
             document.querySelector('footer').style.backgroundColor = "#d4af37";
+
             document.querySelectorAll('.libro').forEach(el => {
                 el.style.color = "#fff"; 
             });
@@ -61,6 +62,7 @@ document.addEventListener("DOMContentLoaded", function () {
             document.querySelector('.logo').style.color = "#fff";
             document.querySelector('footer').style.color = "#d4af37";
             document.querySelector('footer').style.backgroundColor = "#8b5a2b";
+
             document.querySelectorAll('.libro').forEach(el => {
                 el.style.color = "#000"; 
             });

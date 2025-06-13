@@ -6,6 +6,7 @@ use App\Models\Favoritos;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\MenuOpcion;
+use App\Models\Leidos; // Assuming Leidos is a model you want to use
 class FavoritosController extends Controller
 {
     /**
@@ -14,7 +15,9 @@ class FavoritosController extends Controller
     public function menus()
     {
     $opciones = MenuOpcion::where('visible', true)->orderBy('orden')->get();
-    return view('auth.favoritos', compact('opciones'));    
+    $favoritos = Favoritos::orderBy('created_at')->get();
+     $cantidad = Leidos::all()->count();
+    return view('auth.favoritos', compact('opciones', 'favoritos', 'cantidad'));    
     }
 
     /**

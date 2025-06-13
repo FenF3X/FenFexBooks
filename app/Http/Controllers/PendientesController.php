@@ -6,6 +6,7 @@ use App\Models\Pendientes;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\MenuOpcion;
+use App\Models\Leidos; // Assuming Leidos is a model you want to use
 class PendientesController extends Controller
 {
     /**
@@ -14,7 +15,9 @@ class PendientesController extends Controller
     public function menus()
     {
     $opciones = MenuOpcion::where('visible', true)->orderBy('orden')->get();
-    return view('auth.porleer', compact('opciones'));    
+    $pendientes = Pendientes::orderBy('created_at')->get();
+    $cantidad = Leidos::all()->count();
+    return view('auth.porleer', compact('opciones','pendientes','cantidad'));    
 }
 
     /**

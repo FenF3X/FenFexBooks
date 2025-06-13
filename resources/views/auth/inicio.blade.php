@@ -174,6 +174,10 @@
 }
 
 </style>
+<section class="frase">
+          <blockquote>“Leer es soñar con los ojos abiertos.”</blockquote>
+          <p>Has leído <strong><span>{{ $cantidad }}</span> @if($cantidad == 1) <span> libro</span> @else <span> libros</span>@endif</strong> este año.</p>
+        </section>
         <!-- Relleno para que el footer fijo no tape el contenido -->
 <div style="height: 80px;"></div>
 
