@@ -11,7 +11,17 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" id="tema" href="{{ asset('css/pendientes.css') }}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+  <style>
+    .descripcion-corta {
+  cursor: pointer;
+  color: #333;
+}
 
+.descripcion-completa {
+  white-space: pre-line;
+}
+
+  </style>
 </head>
 <body>
 
@@ -95,10 +105,10 @@
     </div>
 
     <div class="mb-3">
-      <label for="descripcion" class="form-label">Descripción (máx. 500 caracteres)</label>
+      <label for="descripcion" class="form-label">Descripción (máx. 65.535 caracteres)</label>
       <div class="position-relative">
-        <textarea class="form-control" id="descripcion" name="descripcion" rows="4" maxlength="500" required></textarea>
-        <small class="text-end position-absolute bottom-0 end-0 p-2" id="contadorCaracteres">0/500</small>
+        <textarea class="form-control" id="descripcion" name="descripcion" rows="4" maxlength="65535" required></textarea>
+        <small class="text-end position-absolute bottom-0 end-0 p-2" id="contadorCaracteres">0/65.535</small>
         <div class="mt-3">
           <button type="submit"  class="btn btn-success" style="background-color:#d4af37;color:#212529;border: 0px;">Guardar entrada</button>
           <input type="hidden" name="libro_id" id="libro_id">
@@ -117,14 +127,23 @@
       <div class="notas-libro" id="notas-libro-{{ $libro->id }}" style="display:none;">
         <h4 class="mt-3">{{ $libro->titulo }}</h4>
         @foreach ($entradas->where('libro_id', $libro->id) as $entrada)
-          <div class="list-group-item d-flex justify-content-between align-items-start" style="background-color: #f8f9fa; margin-bottom: 10px; border-radius: 5px; color: #212529;">
-            <div>
-              <h5 class="mb-1">{{ $entrada->descripcion }}</h5>
-              <p class="mb-1">Página {{ $entrada->pagina_inicio }} a {{ $entrada->pagina_fin }}</p>
-              <small class="text-muted">{{ $entrada->fecha_hora }}</small>
-            </div>
-          </div>
-        @endforeach
+  <div class="list-group-item d-flex justify-content-between align-items-start" style="background-color: #f8f9fa; margin-bottom: 10px; border-radius: 5px; color: #212529;">
+    <div>
+      <h5 class="mb-1 descripcion-corta" onclick="toggleDescripcion(this)">
+        {{ Str::limit($entrada->descripcion, 50) }}
+        <span class="ver-mas text-primary">...ver más</span>
+      </h5>
+      <p class="descripcion-completa d-none">
+        {{ $entrada->descripcion }}
+        <br>
+        <button class="btn btn-sm btn-link p-0 text-danger" onclick="cerrarDescripcion(this)">Cerrar</button>
+      </p>
+      <p class="mb-1">Página {{ $entrada->pagina_inicio }} a {{ $entrada->pagina_fin }}</p>
+      <small class="text-muted">{{ $entrada->fecha_hora }}</small>
+    </div>
+  </div>
+@endforeach
+
       </div>
     @endforeach
   @endif
@@ -285,6 +304,45 @@ document.addEventListener('DOMContentLoaded', function () {
     }
         return true; 
 
+  }
+</script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const fechaHora = document.getElementById('fecha_hora');
+    const textarea = document.getElementById('descripcion');
+    const contador = document.getElementById('contadorCaracteres');
+
+    function actualizarFechaHora() {
+      const ahora = new Date();
+      const fechaFormateada = ahora.toLocaleDateString('es-ES');
+      const horaFormateada = ahora.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+      fechaHora.value = `${fechaFormateada} ${horaFormateada}`;
+    }
+
+    actualizarFechaHora();
+    setInterval(actualizarFechaHora, 60000);
+
+    // Contador de caracteres actualizado
+    textarea.addEventListener('input', () => {
+      contador.textContent = `${textarea.value.length}/65535`;
+    });
+  });
+</script>
+<script>
+  function toggleDescripcion(elemento) {
+    const corta = elemento;
+    const completa = elemento.nextElementSibling;
+
+    corta.classList.add('d-none');
+    completa.classList.remove('d-none');
+  }
+
+  function cerrarDescripcion(boton) {
+    const completa = boton.closest('.descripcion-completa');
+    const corta = completa.previousElementSibling;
+
+    completa.classList.add('d-none');
+    corta.classList.remove('d-none');
   }
 </script>
 
