@@ -29,7 +29,6 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
 
-        // ✅ Cambiar fondo de .estante
         const fondoEstante = window.getComputedStyle(estante).backgroundColor;
         if (fondoEstante === "rgb(139, 90, 43)") {
             estante.style.backgroundColor = "#d4af37";
@@ -37,7 +36,7 @@ document.addEventListener("DOMContentLoaded", function () {
             estante.style.backgroundColor = "#8b5a2b";
 
         }
-        // ✅ Cambiar fondo de .navbar
+      
 
         const fondonavbar = window.getComputedStyle(navbar).backgroundColor;
         if (fondonavbar === "rgb(139, 90, 43)") {

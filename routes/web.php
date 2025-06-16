@@ -10,6 +10,8 @@ use App\Http\Controllers\FavoritosController;
 use App\Http\Controllers\DiarioController;
 use App\Http\Controllers\ConfiguracionController;
 use App\Http\Controllers\GuardarLibroController; 
+
+
 Route::get('/', [LoginController::class, 'viewForm'])->name('login');
 Route::post('/', [LoginController::class, 'login']);
 Route::get('logout', [LoginController::class, 'logout'])->name('logout');
@@ -39,9 +41,10 @@ Route::get('/diario', [DiarioController::class, 'menus'])
     ->middleware('auth')
     ->name('diario');
 
-Route::get('/ajustes', [ConfiguracionController::class, 'menus'])
+Route::get('/configuracion', [ConfiguracionController::class, 'menus'])
     ->middleware('auth')
     ->name('configuracion');
+Route::post('/configuracion/usuario', [UsuarioController::class, 'actualizar'])->name('configuracion.actualizarUsuario');
 
 Route::post('/libros/guardar',[GuardarLibroController::class, 'store']);
 

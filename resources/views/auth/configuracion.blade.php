@@ -45,29 +45,52 @@
       <!-- Contenido principal -->
       <main class="col-md-9 col-lg-10 p-4 contenido">
 <section class="porleer mt-4 text-center">
-  <h2>🔧⚙️Configuracion y datos</h2>
-   
+  <h2>🔧⚙️Configuración y datos</h2>
 </section>
-<section class="progreso">
-          <h2>📘 Lectura actual</h2>
-          <p><strong>Libro:</strong> "El Nombre del Viento"</p>
-          <p><strong>Página:</strong> 87 de 243</p>
-          <button class="btn btn-warning text-dark">Seguir leyendo</button>
-        </section>
 
-        <section class="ultimos">
-          <h2>📚 Últimos libros leídos</h2>
-          <div class="d-flex gap-3">
-            <div class="libro-portada">📕</div>
-            <div class="libro-portada">📗</div>
-            <div class="libro-portada">📘</div>
-          </div>
-        </section>
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
 
-        <section class="frase">
-          <blockquote>“Leer es soñar con los ojos abiertos.”</blockquote>
-          <p>Has leído <strong>12 libros</strong> este año.</p>
-        </section>
+      <!-- Cambiar tema -->
+      <div class="card mb-4">
+        <div class="card-header text-white fw-bold" style="background-color:#8b5a2b;">🎨 Tema de la interfaz</div>
+        <div class="card-body bg-dark">
+          <button id="alternarTema" class="btn bg-dark text-white" style="border: 1px solid #fff;">Alternar modo claro/oscuro</button>
+        </div>
+      </div>
+
+      <!-- Datos del usuario -->
+      <div class="card mb-4">
+        <div class="card-header text-white fw-bold" style="background-color:#8b5a2b;">👤 Información del usuario</div>
+        <div class="card-body bg-dark">
+          <form method="POST" action="{{ route('configuracion.actualizarUsuario') }}">
+            @csrf
+            <div class="mb-3">
+              <label for="usuario" class="form-label text-white">Nombre de usuario</label>
+              <input type="text" class="form-control" id="usuario" name="usuario" value="{{ auth()->user()->usuario }}">
+            </div>
+            <div class="mb-3">
+              <label for="text" class="form-label text-white">Contraseña:</label>
+              <input type="text" class="form-control" id="contrasena" name="contrasena" value="" placeholder="Introduce tu nueva contraseña">
+            </div>
+            <button type="submit" class="btn btn-primary" style="background-color:#d4af37;border:0px;">Guardar cambios</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- LocalStorage -->
+      <div class="card mb-4">
+        <div class="card-header  text-white fw-bold" style="background-color:#8b5a2b;">📚 Libros en curso</div>
+        <div class="card-body bg-dark ">
+          <button class="btn btn-danger" onclick="localStorage.removeItem('libroSeleccionado'); alert('Libro eliminado del almacenamiento local');">Eliminar libro actual</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
         <div style="height: 80px;"></div>
 
 </main>
@@ -77,7 +100,9 @@
   <small>© 2025 FenFexBooks · Todos los derechos reservados</small>
 </footer>
   <!-- Bootstrap Bundle con Popper -->
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bcryptjs@2.4.3/dist/bcrypt.min.js"></script>
 
   <!-- Script de toggle menú -->
   <script>
@@ -90,5 +115,17 @@
       icon.textContent = abierto ? '📘' : '📖';
     });
   </script>
+  <script>
+  document.getElementById('alternarTema').addEventListener('click', () => {
+    const hojaEstilo = document.getElementById('tema');
+    if (hojaEstilo.getAttribute('href').includes('pendientes.css')) {
+      hojaEstilo.setAttribute('href', '{{ asset("css/completados.css") }}');
+    } else {
+      hojaEstilo.setAttribute('href', '{{ asset("css/pendientes.css") }}');
+    }
+  });
+</script>
+
+
 </body>
 </html>
